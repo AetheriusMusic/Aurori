@@ -21,6 +21,7 @@ intents.webhooks = True         # Required for sending webhooks
 client = commands.Bot(command_prefix="!", intents=intents)
 guild_id = 1275409524643205212  # Aether Music server
 owner_id = 767363924734509059  # Aetherius' ID
+guild = None
 spamping_webhook_url = "https://discord.com/api/webhooks/1344344406081142868/a4s9l1enDHisFKPnccwloPQDNBH16HY7MXQBG2UamADn-BPVw4YOzLlW0UHibAK_jKHx"
 
 
@@ -28,6 +29,7 @@ spamping_webhook_url = "https://discord.com/api/webhooks/1344344406081142868/a4s
 # When the bot has connected to Discord
 @client.event
 async def on_ready():
+    guild = client.get_guild(guild_id)
     channel_id = 1292609560527507540  # Bot commands
     channel = client.get_channel(channel_id)
     await channel.send("I'm online!")
@@ -46,21 +48,13 @@ async def on_ready():
     check_avatars.start(guild)
 
     # Syncs /commands
-    if guild:
-        await client.tree.sync(guild=guild)
+    try:
+        await client.tree.sync()
         print(f"Syncing /slash commands to {guild.name}...")
-    for command in client.tree.get_commands():
-        print(f"Registered command: {command.name}")
-
-@client.command(name="clear_commands")
-async def clear_commands(ctx):
-    client.tree.clear_commands()
-    await ctx.send("Cleared all commands. Restart and re-sync.")
-
-@client.command(name="sync_commands")
-async def sync_commands(ctx):
-    for command in client.tree.get_commands():
-        await ctx.send("Syncing commands")
+        for command in client.tree.get_commands():
+            print(f"Registered command: {command.name}")
+    except Exception as e:
+            print(f"Failed to sync commands: {e}")
 
 
 
@@ -104,24 +98,25 @@ async def slash_shutdown(interaction: discord.Interaction):
 
 # Slash command to spamping
 @client.tree.command(name="spamping", description="Destroy a user's soul")
-async def slash_spamping(interaction: discord.Interaction, user: discord.User, times: int):
+async def slash_spamping(interaction: discord.Interaction, times: int, role: discord.Role):
     
     if interaction.user.id != owner_id:
         await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
         return
 
-    if times > 10:  # Prevent excessive spamming
+    if times > 1000:  # Prevent excessive spamming
         await interaction.response.send_message("You can't spam more than 10 times!")
         return
 
-    message = f"{user.mention} 🔔🔔🔔"
+    message = f"{role.mention} SILKSONG NON ESISTE"
 
     async with aiohttp.ClientSession() as session:
         webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
         
-        await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=client.user.avatar.url if client.user.avatar else None)
+        for _ in range(times):
+            await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=client.user.avatar.url if client.user.avatar else None)
 
-        await interaction.response.send_message(f"Successfully pinged {user.mention} {times} times!")
+        await interaction.response.send_message(f"Successfully pinged {role.mention} {times} times!")
         print("Slash `spamping` command successfully executed.")
 
 
