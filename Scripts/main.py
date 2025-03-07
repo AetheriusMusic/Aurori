@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import discord
 import aiohttp
-from discord import Intents
+from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
 # Loads token from .env
@@ -22,7 +22,7 @@ client = commands.Bot(command_prefix="!", intents=intents)
 guild_id = 1275409524643205212  # Aether Music server
 owner_id = 767363924734509059  # Aetherius' ID
 guild = None
-spamping_webhook_url = "https://discord.com/api/webhooks/1344344406081142868/a4s9l1enDHisFKPnccwloPQDNBH16HY7MXQBG2UamADn-BPVw4YOzLlW0UHibAK_jKHx"
+spamping_webhook_url = "https://discord.com/api/webhooks/1346566625591033886/oApOk5EeMufdPcExHaYslNSx6MxCJWhUR_JvS_P-XjCGG1sDc2fLg5-2mzADLLyQSMoZ"
 
 
 
@@ -30,9 +30,9 @@ spamping_webhook_url = "https://discord.com/api/webhooks/1344344406081142868/a4s
 @client.event
 async def on_ready():
     guild = client.get_guild(guild_id)
-    channel_id = 1292609560527507540  # Bot commands
+    channel_id = 1346126004229247010  # Bot commands
     channel = client.get_channel(channel_id)
-    await channel.send("I'm online!")
+    await channel.send("I'm online! 🤓")
     print(f"{client.user} is connected to Discord!")
 
     guild = client.get_guild(guild_id)
@@ -98,26 +98,42 @@ async def slash_shutdown(interaction: discord.Interaction):
 
 # Slash command to spamping
 @client.tree.command(name="spamping", description="Destroy a user's soul")
+@app_commands.describe(
+    times="Number of times to ping",
+    user="The user to ping",
+    role="The role to mention",
+    text="Custom message to include"
+)
 async def slash_spamping(interaction: discord.Interaction, times: int, user: discord.User = None, role: discord.Role = None, text: str = "You've been spammed!"):
-    
-    if interaction.user.id != owner_id:
-        await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
-        return
+    try:
+        if interaction.user.id != owner_id:
+            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+            return
 
-    if times > 100:  # Prevent excessive spamming
-        await interaction.response.send_message("You can't spam ping more than 100 times!")
-        return
+        if times > 100:  # Prevent excessive spamming
+            await interaction.response.send_message("You can't spam ping more than 100 times!", ephemeral=True)
+            return
 
-    message = f"{user.mention} {role.mention} {text}"  # Custom message
+        if user is None:
+            await interaction.response.send_message("You must specify a user to ping!", ephemeral=True)
+            return
 
-    async with aiohttp.ClientSession() as session:
-        webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
-        
-        for _ in range(times):
-            await webhook.send(message, username="Deleterius & Co. Spamping™", avatar="3a65383b2033cafffab2b83651eb402e")
+        role_mention = role.mention if role else ""
+        message = f"{user.mention} {role_mention} {text}"  # Custom message
 
-        await interaction.response.send_message(f"Successfully pinged {user.mention} {role.mention} {times} times!")
+        await interaction.response.defer()  # Defer the response to give more time
+
+        async with aiohttp.ClientSession() as session:
+            webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
+            
+            for _ in range(times):
+                await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url= None)
+
+        await interaction.followup.send(f"Successfully pinged {user.mention} {role_mention} {times} times!")
         print("Slash `spamping` command successfully executed.")
+    except Exception as e:
+        print(f"An error occurred in the `spamping` command: {e}")
+        await interaction.followup.send("An error occurred while executing the command.", ephemeral=True)
 
 
 
@@ -129,7 +145,7 @@ async def on_disconnect():
 # On shut down
 @client.event
 async def on_close():
-    channel_id = 1323038721234440326  # General chat
+    channel_id = 1346125122020446278  # General chat
     channel = client.get_channel(channel_id)
     if channel:
         await channel.send("I'm gonna sleep!")
