@@ -1,8 +1,9 @@
+import random
 import os
 from dotenv import load_dotenv
 import discord
 import aiohttp
-from discord import Intents, app_commands
+from discord import Intents, app_commands, embeds
 from discord.ext import commands, tasks
 
 # Loads token from .env
@@ -20,7 +21,7 @@ intents.webhooks = True         # Required for sending webhooks
 # Sets up the bot client (connection with Discord)
 client = commands.Bot(command_prefix="!", intents=intents)
 guild_id = 1275409524643205212  # Aether Music server
-owner_id = 767363924734509059  # Aetherius' ID
+owner_id = 767363924734509059   # Aetherius' ID
 guild = None
 spamping_webhook_url = "https://discord.com/api/webhooks/1346566625591033886/oApOk5EeMufdPcExHaYslNSx6MxCJWhUR_JvS_P-XjCGG1sDc2fLg5-2mzADLLyQSMoZ"
 
@@ -30,7 +31,7 @@ spamping_webhook_url = "https://discord.com/api/webhooks/1346566625591033886/oAp
 @client.event
 async def on_ready():
     guild = client.get_guild(guild_id)
-    channel_id = 1346126004229247010  # Bot commands
+    channel_id = 1328140497364975656  # Testing channel
     channel = client.get_channel(channel_id)
     await channel.send("I'm online! 🤓")
     print(f"{client.user} is connected to Discord!")
@@ -47,42 +48,45 @@ async def on_ready():
     # Start the avatar-checking task
     check_avatars.start(guild)
 
-    # Syncs /commands
+    # Syncs /slash commands
     try:
         await client.tree.sync()
         print(f"Syncing /slash commands to {guild.name}...")
         for command in client.tree.get_commands():
             print(f"Registered command: {command.name}")
-    except Exception as e:
-            print(f"Failed to sync commands: {e}")
+    except Exception as error:
+            print(f"Failed to sync commands: {error}")
 
 
 
-# Regular command to get ping
+
+
+# Regular !ping command
 @client.command(name="ping")
-async def ping(ctx):
+async def regular_ping(ctx):
     latency = round(client.latency * 1000)  # Convert latency to milliseconds
     await ctx.send(f"Pong! 🏓 Latency: {latency}ms")
-    print("`!ping` command succesfully executed.")
+    print(f"Regular `!ping` command successfully executed by {ctx.author.name}")
 
-# Slash command to get ping
+# Slash /ping command
 @client.tree.command(name="ping", description="Check the bot's latency")
-async def ping(interaction: discord.Interaction):
+async def slash_ping(interaction: discord.Interaction):
     latency = round(client.latency * 1000)  # Convert latency to milliseconds
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency}ms")
-    print("`/ping` command succesfully executed.")
+    print(f"Slash `/ping` command successfully executed by {interaction.user.name}")
 
 
 
-# Regular command to shutdown
+# Regular !shutdown command
 @client.command(name="shutdown")
 @commands.is_owner()  # Restrict this command to the bot owner
 async def regular_shutdown(ctx):
     await ctx.send("Shutting down...")
-    print("Regular `shutdown` command successfully executed. Closing client...")
+    print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
     await client.close()
+    print("Client closed successfully")
 
-# Slash command to shutdown
+# Slash /shutdown command
 @client.tree.command(name="shutdown", description="Shut down the bot")
 async def slash_shutdown(interaction: discord.Interaction):
 
@@ -91,49 +95,149 @@ async def slash_shutdown(interaction: discord.Interaction):
         return
 
     await interaction.response.send_message("Shutting down...")
-    print("Slash `shutdown` command successfully executed. Closing client...")
+    print(f"Slash `/shutdown` command successfully executed by {interaction.user.name}")
     await client.close()
+    print("Client closed successfully")
 
 
 
-# Slash command to spamping
+
+
+# Regular !spamping command
+@client.command(name="spamping")
+async def regular_spamping(ctx, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
+    try:
+
+        if times > 100:  # Prevent excessive spamming
+            times = 100
+            await ctx.send("You can't spam ping more than 100 times! (Limiting to 100...)")
+
+        user_mention = user.mention if user else ""
+        role_mention = role.mention if role else ""
+
+        if user_mention and role_mention:
+            ping_provided = f"{user_mention} and {role_mention}"
+        elif user_mention and not role_mention:
+            ping_provided = user_mention
+        elif role_mention and not user_mention:
+            ping_provided = role_mention
+        else:
+            ping_provided = False
+
+        message = f"{ping_provided} {text}"  # Custom message
+
+        await ctx.defer()  # Defer the response to give more time
+
+        if times > 1 and ping_provided:  # Check if user or role is provided
+
+            async with aiohttp.ClientSession() as session:
+                webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
+                
+                for _ in range(times):
+                    await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
+
+            await ctx.send(f"Successfully pinged {ping_provided} {times} times!")
+            print(f"Regular `!spamping` command successfully executed by {ctx.author.name}")
+        elif times < 2 and ping_provided:
+            await ctx.send("Please insert a value bigger than 1!")
+        elif times < 2 and not ping_provided:
+            await ctx.send("Please provide a user or a role to ping and insert a value bigger than 1!")
+        elif times > 1 and not ping_provided:
+            await ctx.send("Please provide a user or a role to ping!")
+        elif times > 100:
+            times = 100
+            await ctx.send("You can't spam ping more than 100 times! (Limiting to 100...)", ephemeral=True)
+
+    except Exception as error:
+        print(f"An error occurred in the `/spamping` command: {error}")
+        await ctx.send(f"An error occurred while executing the command.\nError: **{error}**")
+
+
+
+# Slash /spamping command
 @client.tree.command(name="spamping", description="Destroy a user's soul")
 @app_commands.describe(
     times="Number of times to ping",
     user="The user to ping",
-    role="The role to mention",
-    text="Custom message to include"
+    role="The role to ping",
+    text="Custom message to include (default: \"Hello :3\")"
 )
-async def slash_spamping(interaction: discord.Interaction, times: int, user: discord.User = None, role: discord.Role = None, text: str = "You've been spammed!"):
+async def slash_spamping(interaction: discord.Interaction, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
     try:
-        if interaction.user.id != owner_id:
-            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
-            return
 
-        if times > 100:  # Prevent excessive spamming
-            await interaction.response.send_message("You can't spam ping more than 100 times!", ephemeral=True)
-            return
-
-        if user is None:
-            await interaction.response.send_message("You must specify a user to ping!", ephemeral=True)
-            return
-
+        user_mention = user.mention if user else ""
         role_mention = role.mention if role else ""
-        message = f"{user.mention} {role_mention} {text}"  # Custom message
+
+        if user_mention and role_mention:
+            ping_provided = f"{user_mention} and {role_mention}"
+        elif user_mention and not role_mention:
+            ping_provided = user_mention
+        elif role_mention and not user_mention:
+            ping_provided = role_mention
+        else:
+            ping_provided = False
+
+        message = f"{ping_provided} {text}"  # Custom message
 
         await interaction.response.defer()  # Defer the response to give more time
 
-        async with aiohttp.ClientSession() as session:
-            webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
-            
-            for _ in range(times):
-                await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url= None)
+        if times > 1 and ping_provided:  # Check if user or role is provided
 
-        await interaction.followup.send(f"Successfully pinged {user.mention} {role_mention} {times} times!")
-        print("Slash `spamping` command successfully executed.")
-    except Exception as e:
-        print(f"An error occurred in the `spamping` command: {e}")
-        await interaction.followup.send("An error occurred while executing the command.", ephemeral=True)
+            async with aiohttp.ClientSession() as session:
+                webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
+                
+                for _ in range(times):
+                    await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
+
+            await interaction.followup(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+            print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
+        elif times < 2 and ping_provided.send:
+            await interaction.followup.send("Please insert a value bigger than 1!", ephemeral=True)
+        elif times < 2 and not ping_provided:
+            await interaction.followup.send("Please provide a user or a role to ping and insert a value bigger than 1!", ephemeral=True)
+        elif times > 1 and not ping_provided:
+            await interaction.followup.send("Please provide a user or a role to ping!", ephemeral=True)
+        elif times > 100:
+            times = 100
+            await interaction.followup.send("You can't spam ping more than 100 times! (Limiting to 100...)", ephemeral=True)
+
+    except Exception as error:
+        print(f"An error occurred in the `/spamping` command: {error}")
+        await interaction.followup.send(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+
+
+
+# Regular !love command
+@client.command(name="love")
+async def regular_love(ctx):
+
+    random_message = ("I love you",
+                      "I love you more than anything",
+                      "I love you more than words can describe",
+                      "I love you more than you can imagine",
+                      "I love you more than you will ever know",
+                      "You're goddamn fine")
+
+    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
+
+    await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
+    print(f"Regular `!ping` command successfully executed by {ctx.author.name}")
+
+# Slash /love command
+@client.tree.command(name="love", description="Let the bot show you some love")
+async def slash_love(interaction: discord.Interaction):
+
+    random_message = ("I love you",
+                      "I love you more than anything",
+                      "I love you more than words can describe",
+                      "I love you more than you can imagine",
+                      "I love you more than you will ever know",
+                      "You're goddamn fine")
+
+    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
+
+    await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
+    print(f"Slash `/love` command successfully executed by {interaction.user.name}")
 
 
 
@@ -142,20 +246,10 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
 async def on_disconnect():
     print(f"{client.user} has disconnected from Discord!")
 
-# On shut down
-@client.event
-async def on_close():
-    channel_id = 1346125122020446278  # General chat
-    channel = client.get_channel(channel_id)
-    if channel:
-        await channel.send("I'm gonna sleep!")
-
 
 
 # Avatar update
-user_avatars = {}
-
-
+user_avatars = {}  # Store user avatars
 
 @tasks.loop(seconds=10)  # Adjust the interval as needed
 async def check_avatars(guild):
