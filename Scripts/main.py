@@ -188,14 +188,16 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
 
         if times > 1 and ping_provided:  # Check if user or role is provided
 
+            # Spamping using a webhook
             async with aiohttp.ClientSession() as session:
                 webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
                 
                 for _ in range(times):
                     await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-            await interaction.followup(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
-            print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
+                await interaction.followup(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+                print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
+
         elif times < 2 and ping_provided.send:
             await interaction.followup.send("Please insert a value bigger than 1!", ephemeral=True)
         elif times < 2 and not ping_provided:
@@ -300,8 +302,7 @@ async def slash_embed(interaction: discord.Interaction,
                 embed.add_field(name=field_2_title, value=field_2_description, inline=field_2_is_inline)
                 if field_3_title and field_3_description:
                     embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
-        if footer != None:
-            footer = footer
+        if footer:
             embed.set_footer(text=footer, icon_url=interaction.guild.icon.url)
 
         await channel.send(embed=embed)
