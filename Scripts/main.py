@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import discord
 import aiohttp
-from discord import Intents, app_commands, embeds
+from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
 # Loads token from .env
@@ -98,6 +98,40 @@ async def slash_shutdown(interaction: discord.Interaction):
     print(f"Slash `/shutdown` command successfully executed by {interaction.user.name}")
     await client.close()
     print("Client closed successfully")
+
+
+
+# Regular !love command
+@client.command(name="love")
+async def regular_love(ctx):
+
+    random_message = ("I love you",
+                      "I love you more than anything",
+                      "I love you more than words can describe",
+                      "I love you more than you can imagine",
+                      "I love you more than you will ever know",
+                      "You're goddamn fine")
+
+    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
+
+    await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
+    print(f"Regular `!ping` command successfully executed by {ctx.author.name}")
+
+# Slash /love command
+@client.tree.command(name="love", description="Let the bot show you some love")
+async def slash_love(interaction: discord.Interaction):
+
+    random_message = ("I love you",
+                      "I love you more than anything",
+                      "I love you more than words can describe",
+                      "I love you more than you can imagine",
+                      "I love you more than you will ever know",
+                      "You're goddamn fine")
+
+    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
+
+    await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
+    print(f"Slash `/love` command successfully executed by {interaction.user.name}")
 
 
 
@@ -211,42 +245,6 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
     except Exception as error:
         print(f"An error occurred in the `/spamping` command: {error}")
         await interaction.response.send_message(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
-
-
-
-
-
-# Regular !love command
-@client.command(name="love")
-async def regular_love(ctx):
-
-    random_message = ("I love you",
-                      "I love you more than anything",
-                      "I love you more than words can describe",
-                      "I love you more than you can imagine",
-                      "I love you more than you will ever know",
-                      "You're goddamn fine")
-
-    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
-
-    await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
-    print(f"Regular `!ping` command successfully executed by {ctx.author.name}")
-
-# Slash /love command
-@client.tree.command(name="love", description="Let the bot show you some love")
-async def slash_love(interaction: discord.Interaction):
-
-    random_message = ("I love you",
-                      "I love you more than anything",
-                      "I love you more than words can describe",
-                      "I love you more than you can imagine",
-                      "I love you more than you will ever know",
-                      "You're goddamn fine")
-
-    random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
-
-    await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
-    print(f"Slash `/love` command successfully executed by {interaction.user.name}")
 
 
 
