@@ -53,9 +53,9 @@ async def on_ready():
         await client.tree.sync()
         print(f"Syncing /slash commands to {guild.name}...")
         for command in client.tree.get_commands():
-            print(f"Registered command: {command.name}")
+            print(f"Registered /slash command: /{command.name}")
     except Exception as error:
-            print(f"Failed to sync commands: {error}")
+            print(f"Failed to sync /slash commands: {error}")
 
 
 
@@ -105,6 +105,7 @@ async def slash_shutdown(interaction: discord.Interaction):
 
 # Regular !spamping command
 @client.command(name="spamping")
+@commands.is_owner()  # Restrict this command to the bot owner
 async def regular_spamping(ctx, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
     try:
 
@@ -149,7 +150,7 @@ async def regular_spamping(ctx, times: int, user: discord.User = None, role: dis
             await ctx.send("You can't spam ping more than 100 times! (Limiting to 100...)", ephemeral=True)
 
     except Exception as error:
-        print(f"An error occurred in the `/spamping` command: {error}")
+        print(f"An error occurred in the `!spamping` command: {error}")
         await ctx.send(f"An error occurred while executing the command.\nError: **{error}**")
 
 
@@ -164,6 +165,10 @@ async def regular_spamping(ctx, times: int, user: discord.User = None, role: dis
 )
 async def slash_spamping(interaction: discord.Interaction, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
     try:
+
+        if interaction.user.id != owner_id:
+            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+            return
 
         user_mention = user.mention if user else ""
         role_mention = role.mention if role else ""
@@ -203,7 +208,9 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
 
     except Exception as error:
         print(f"An error occurred in the `/spamping` command: {error}")
-        await interaction.followup.send(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+        await interaction.response.send_message(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+
+
 
 
 
@@ -238,6 +245,73 @@ async def slash_love(interaction: discord.Interaction):
 
     await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
     print(f"Slash `/love` command successfully executed by {interaction.user.name}")
+
+
+
+
+
+# Slash /embed command
+@client.tree.command(name="embed", description="Send an embed")
+@app_commands.describe(
+    channel = "The channel to send the embed in",
+    title = "The title of the embed (default: Title)",
+    description = "The description of the embed (default: Description)",
+    color = "The hexadecimal value of the color of the embed (default: #9954DD)",
+    field_1_title = "The title of the first field",
+    field_1_description = "The description of the first field",
+    field_1_is_inline = "Whether the first field is inline or not (default: False)",
+    field_2_title = "The title of the second field",
+    field_2_description="The description of the second field",
+    field_2_is_inline = "Whether the second field is inline or not (default: False)",
+    field_3_title = "The title of the third field",
+    field_3_description = "The description of the third field",
+    field_3_is_inline = "Whether the third field is inline or not (default: False)",
+    footer = "The footer text"
+)
+async def slash_embed(interaction: discord.Interaction,
+                      channel: discord.TextChannel,
+                      title: str = "Title",
+                      description: str = "Description",
+                      color: str = "#9954DD",
+                      field_1_title: str = None,
+                      field_1_description: str = None,
+                      field_1_is_inline: bool = False,
+                      field_2_title: str = None,
+                      field_2_description: str = None,
+                      field_2_is_inline: bool = False,
+                      field_3_title: str = None,
+                      field_3_description: str = None,
+                      field_3_is_inline: bool = False,
+                      footer: str = None
+                      ):
+    try:
+
+        if interaction.user.id != owner_id:
+            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+            return
+
+        # Convert hex color to discord.Color
+        color = discord.Color(int(color.lstrip('#'), 16))
+
+        embed = discord.Embed(title=title, description=description, color=color)
+        if field_1_title and field_1_description:
+            embed.add_field(name=field_1_title, value=field_1_description, inline=field_1_is_inline)
+            if field_2_title and field_2_description:
+                embed.add_field(name=field_2_title, value=field_2_description, inline=field_2_is_inline)
+                if field_3_title and field_3_description:
+                    embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
+        if footer != None:
+            footer = footer
+            embed.set_footer(text=footer, icon_url=interaction.guild.icon.url)
+
+        await channel.send(embed=embed)
+        await interaction.response.send_message("Embed sent successfully!", ephemeral=True)
+
+    except Exception as error:
+        print(f"An error occurred in the `/embed` command: {error}")
+        await interaction.response.send_message(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+
+
 
 
 
