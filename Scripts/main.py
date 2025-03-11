@@ -41,12 +41,14 @@ async def on_ready():
         print(f"Could not find guild with ID {guild_id}.")
         return
 
-    # Initialize user avatars for all members in the guild
+    # Initialize user avatars and nicknames for all members in the guild
     for member in guild.members:
         user_avatars[member.id] = member.avatar
+        user_nicknames[member.id] = member.nick
 
-    # Start the avatar-checking task
+    # Start the avatars and nicknames checking tasks
     check_avatars.start(guild)
+    check_nicknamens.start(guild)
 
     # Syncs /slash commands
     try:
@@ -345,6 +347,32 @@ async def check_avatars(guild):
         else:
             # Store the avatar if it's not already stored
             user_avatars[member.id] = member.avatar
+
+
+
+user_nicknames = {}  # Store user nicknames
+
+@tasks.loop(seconds=10)  # Adjust the interval as needed
+async def check_nicknamens(guild):
+
+    channel_id = 1292539484201685012 # User logs channel
+    channel = client.get_channel(channel_id)
+
+    for member in guild.members:  # Iterate through all members in the guild
+        if member.id in user_nicknames:
+            if  member.nick != user_nicknames[member.id]:  # Compare stored nickname with current nickname
+                await channel.send(f"{member.name} changed their nickname!")
+                await channel.send(f"Old nickname: {user_nicknames[member.id]}")
+                await channel.send(f"New nickname: {member.nick}")
+                print(f"{member.name} changed their nickname!")
+                print(f"Old nickname: {user_nicknames[member.id]}")
+                print(f"New nickname: {member.nick}")
+
+                # Update the stored avatar
+                user_nicknames[member.id] = member.nick
+        else:
+            # Store the avatar if it's not already stored
+            user_nicknames[member.id] = member.nick
 
 
 
