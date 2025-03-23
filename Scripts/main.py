@@ -159,6 +159,43 @@ async def slash_coinflip(interaction: discord.Interaction):
 
 
 
+# Regular !avatar command
+@client.command(name="avatar")
+async def regular_avatar(ctx, user: discord.User = None):
+
+    user = user or ctx.author
+    avatar_url = user.avatar.url
+
+    color = "#9954DD"
+    color = discord.Color(int(color.lstrip('#'), 16))
+
+    embed = discord.Embed(title=f"{user.name}'s avatar", color=color)
+    embed.set_image(url=avatar_url)
+
+    await ctx.send(embed=embed)
+    print(f"Regular `!avatar` command successfully executed by {ctx.author.name}")
+
+
+
+# Slash /avatar command
+@client.tree.command(name="avatar", description="Get a user's avatar")
+@app_commands.describe(user="The user to get the avatar of")
+async def slash_avatar(interaction: discord.Interaction, user: discord.User = None):
+
+    user = user or interaction.user
+    avatar_url = user.avatar.url
+
+    color = "#9954DD"
+    color = discord.Color(int(color.lstrip('#'), 16))
+
+    embed = discord.Embed(title=f"{user.name}'s avatar", color=color)
+    embed.set_image(url=avatar_url)
+
+    await interaction.response.send_message(embed=embed)
+    print(f"Slash `/avatar` command successfully executed by {interaction.user.name}")
+
+
+
 # Regular !spamping command
 @client.command(name="spamping")
 @commands.is_owner()  # Restrict this command to the bot owner
