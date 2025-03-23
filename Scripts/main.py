@@ -232,15 +232,14 @@ async def regular_spamping(ctx, times: int, user: discord.User = None, role: dis
 
             await ctx.send(f"Successfully pinged {ping_provided} {times} times!")
             print(f"Regular `!spamping` command successfully executed by {ctx.author.name}")
-        elif times < 2 and ping_provided:
-            await ctx.send("Please insert a value bigger than 1!")
-        elif times < 2 and not ping_provided:
-            await ctx.send("Please provide a user or a role to ping and insert a value bigger than 1!")
-        elif times > 1 and not ping_provided:
-            await ctx.send("Please provide a user or a role to ping!")
-        elif times > 100:
+        
+        if times < 1:
+            await ctx.send("Insert a value bigger than 1!")
+        if not ping_provided:
+            await ctx.send("Provide a user or a role to ping!")
+        if times > 100:
             times = 100
-            await ctx.send("You can't spam ping more than 100 times! (Limiting to 100...)", ephemeral=True)
+            await ctx.send("You can't spam ping more than 100 times! (Limit set to 100)")
 
     except Exception as error:
         print(f"An error occurred in the `!spamping` command: {error}")
@@ -288,18 +287,16 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
                 for _ in range(times):
                     await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-                await interaction.followup(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+                await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
                 print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
 
-        elif times < 2 and ping_provided.send:
-            await interaction.followup.send("Please insert a value bigger than 1!", ephemeral=True)
-        elif times < 2 and not ping_provided:
-            await interaction.followup.send("Please provide a user or a role to ping and insert a value bigger than 1!", ephemeral=True)
-        elif times > 1 and not ping_provided:
-            await interaction.followup.send("Please provide a user or a role to ping!", ephemeral=True)
-        elif times > 100:
+        if times < 1:
+            await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
+        if not ping_provided:
+            await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
+        if times > 100:
             times = 100
-            await interaction.followup.send("You can't spam ping more than 100 times! (Limiting to 100...)", ephemeral=True)
+            await interaction.followup.send("You can't spam ping more than 100 times! (Limit set to 100)", ephemeral=True)
 
     except Exception as error:
         print(f"An error occurred in the `/spamping` command: {error}")
