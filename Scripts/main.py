@@ -117,7 +117,7 @@ async def regular_love(ctx):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
-    print(f"Regular `!ping` command successfully executed by {ctx.author.name}")
+    print(f"Regular `!love` command successfully executed by {ctx.author.name}")
 
 # Slash /love command
 @client.tree.command(name="love", description="Let the bot show you some love")
@@ -136,6 +136,26 @@ async def slash_love(interaction: discord.Interaction):
     print(f"Slash `/love` command successfully executed by {interaction.user.name}")
 
 
+
+# Regular !coinflip command
+@client.command(name="coinflip")
+async def regular_coinflip(ctx):
+
+    random_output = ("heads", "tails")
+
+    await ctx.send(f"You got {random.choice(random_output)}!")
+    print(f"Regular `!coinflip` command successfully executed by {ctx.author.name}")
+
+
+
+# Slash /coinflip command
+@client.tree.command(name="coinflip", description="Flip a coin")
+async def slash_coinflip(interaction: discord.Interaction):
+
+    random_output = ("heads", "tails")
+
+    await interaction.response.send_message(f"You got {random.choice(random_output)}!")
+    print(f"Slash `/coinflip` command successfully executed by {interaction.user.name}")
 
 
 
