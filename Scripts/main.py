@@ -79,6 +79,17 @@ async def on_ready():
 
 
 
+# On message
+@client.event
+async def on_message(message):
+    if message.channel.id == 1359200351282008236:
+        thread = await message.channel.create_thread(name=f"{message.author.name}' idea",message=message)
+        await thread.send(f"Thank you {message.author.mention}! If you want to discuss anything, say it here, and don't forget to publish the message you sent!")
+        print(f"SCP: PyLab thread created by {message.author.name}")
+
+
+
+
 # On disconnect
 @client.event
 async def on_disconnect():
