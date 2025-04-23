@@ -1,12 +1,12 @@
 import random
 import os
-from dotenv import load_dotenv
 import discord
 import aiohttp
 from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
-
+# TODO: Do not hardcode.
+TOKEN = "MTMyODExNTIzOTk5NjM1ODY1Ng.GJQarU.eSqeqUZwOB6LRMiSNlBlOWMN7F3ujFt1aJN7Tg"
 
 # Sets up Discord intents (permissions for the bot)
 intents = Intents.default()
