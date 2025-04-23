@@ -1,8 +1,4 @@
-import random
-import os
-import discord
-import aiohttp
-from discord import Intents, app_commands
+from discord import Intents
 from discord.ext import commands, tasks
 from Commands import regular_ping, slash_ping, regular_shutdown, slash_shutdown, regular_love, slash_love, regular_coinflip, slash_coinflip, regular_avatar, slash_avatar, regular_spamping, slash_spamping, slash_embed
 
