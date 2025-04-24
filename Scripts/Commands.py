@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import random
 import os
 import discord
@@ -6,7 +8,11 @@ from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
 # TODO: Do not hardcode.
-TOKEN = "MTMyODExNTIzOTk5NjM1ODY1Ng.GJQarU.eSqeqUZwOB6LRMiSNlBlOWMN7F3ujFt1aJN7Tg"
+TOKEN_FILENAME = ".token"
+TOKEN_PATH = Path(__file__).resolve().parent.parent / ".token"
+
+with open(TOKEN_PATH, "r") as file:
+    TOKEN = file.read().strip()
 
 # Sets up Discord intents (permissions for the bot)
 intents = Intents.default()
