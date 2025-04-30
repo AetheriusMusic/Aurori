@@ -82,11 +82,14 @@ async def on_ready():
 # On message
 @client.event
 async def on_message(message):
+    # Handle specific messages in the SCP: PyLab channel
     if message.channel.id == 1359200351282008236:
-        thread = await message.channel.create_thread(name=f"{message.author.name}' idea",message=message)
+        thread = await message.channel.create_thread(name=f"{message.author.name}'s idea", message=message)
         await thread.send(f"Thank you {message.author.mention}! If you want to discuss anything, say it here, and don't forget to publish the message you sent!")
         print(f"SCP: PyLab thread created by {message.author.name}")
 
+    # Allow the bot to process commands
+    await client.process_commands(message)
 
 
 
