@@ -7,12 +7,7 @@ import aiohttp
 from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
-# TODO: Do not hardcode.
-TOKEN_FILENAME = ".token"
-TOKEN_PATH = Path(__file__).resolve().parent.parent / ".token"
 
-with open(TOKEN_PATH, "r") as file:
-    TOKEN = file.read().strip()
 
 # Sets up Discord intents (permissions for the bot)
 intents = Intents.default()

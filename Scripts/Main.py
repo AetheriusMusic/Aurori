@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from discord import Intents
+from discord import Intents, presences
 from discord.ext import commands, tasks
 
 from Commands import regular_ping, slash_ping, regular_shutdown, slash_shutdown, regular_love, slash_love, regular_coinflip, slash_coinflip, regular_avatar, slash_avatar, regular_spamping, slash_spamping, slash_embed
@@ -11,7 +11,9 @@ TOKEN_PATH = Path(__file__).resolve().parent.parent / ".token"
 with open(TOKEN_PATH, "r") as file:
     TOKEN = file.read().strip()
 
-# Sets up Discord intents (permissions for the bot)
+
+
+# Discord intents (permissions for the bot)
 intents = Intents.default()
 intents.message_content = True  # For reading message content
 intents.guilds = True           # For detecting guilds (servers)
@@ -19,7 +21,8 @@ intents.presences = True        # Enable presence intent
 intents.members = True          # Required for fetching members
 intents.webhooks = True         # Required for sending webhooks
 
-# Sets up the bot client (connection with Discord)
+
+# Bot client (connection with Discord)
 client = commands.Bot(command_prefix="!", intents=intents)
 guild_id = 1275409524643205212  # Aether Music server
 owner_id = 767363924734509059   # Aetherius' ID
@@ -153,8 +156,37 @@ async def check_nicknamens(guild):
 
 
 
+from pypresence import Presence
+import time
+
+# Initialize the Discord Rich Presence client
+client_id = "1328115239996358656"  # Replace with your application's client ID
+rpc = Presence(client_id)
+
+
+# Update presence
+def update_presence():
+    rpc.update(
+        state="Aether Music",
+        details="Chilling",
+        party_id="ae488379-351d-4a4f-ad32-2b9b01c91657",
+        party_size=1,  # Current size and max size of the party
+        join="MTI4NzM0OjFpMmhuZToxMjMxMjM="  # Join secret
+    )
+
+
+
 # Function to start the bot
 def bot_startup():
     client.run(TOKEN)
 
 bot_startup()
+
+rpc.connect()
+# Continuously update presence
+try:
+    while True:
+        update_presence()
+        time.sleep(15)  # Discord recommends updating every 15 seconds
+except KeyboardInterrupt:
+    print("Rich Presence stopped.")
