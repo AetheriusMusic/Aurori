@@ -7,6 +7,10 @@ import aiohttp
 from discord import Intents, app_commands
 from discord.ext import commands, tasks
 
+from data import *
+
+
+
 
 
 # Sets up Discord intents (permissions for the bot)
