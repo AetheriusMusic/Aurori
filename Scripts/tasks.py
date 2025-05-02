@@ -1,10 +1,9 @@
-from pathlib import Path
-
-from discord import Intents
-from discord.ext import commands, tasks
+from discord.ext import tasks
 
 from data import *
 from utility import *
+
+
 
 
 
@@ -12,17 +11,11 @@ from utility import *
 user_avatars = {}
 
 @tasks.loop(seconds=10)
-async def check_avatars(guild):
-    if user_logs_channel is None:
-        print("User logs channel is not initialized. Skipping avatar check.")
-        return
+async def check_avatars(guild, channel):
 
     for member in guild.members:  # Iterate through all members in the guild
         if member.id in user_avatars:
             if member.avatar != user_avatars[member.id]:  # Compare stored avatar with current avatar
-                await user_logs_channel.send(f"{member.name} changed their avatar!")
-                await user_logs_channel.send(f"Old avatar: {user_avatars[member.id]}")
-                await user_logs_channel.send(f"New avatar: {member.avatar}")
                 print(f"{member.name} changed their avatar!")
                 print(f"Old avatar: {user_avatars[member.id]}")
                 print(f"New avatar: {member.avatar}")
@@ -47,17 +40,11 @@ async def check_avatars(guild):
 user_nicknames = {}
 
 @tasks.loop(seconds=10)
-async def check_nicknames(guild):
-    if user_logs_channel is None:
-        print("User logs channel is not initialized. Skipping nickname check.")
-        return
+async def check_nicknames(guild, channel):
 
     for member in guild.members:  # Iterate through all members in the guild
         if member.id in user_nicknames:
             if member.nick != user_nicknames[member.id]:  # Compare stored nickname with current nickname
-                await user_logs_channel.send(f"{member.name} changed their nickname!")
-                await user_logs_channel.send(f"Old nickname: {user_nicknames[member.id]}")
-                await user_logs_channel.send(f"New nickname: {member.nick}")
                 print(f"{member.name} changed their nick!")
                 print(f"Old nickname: {user_nicknames[member.id]}")
                 print(f"New nickname: {member.nick}")

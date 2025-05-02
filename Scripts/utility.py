@@ -5,22 +5,21 @@ from data import *
 
 
 
-def make_embed(interaction: discord.Interaction,
-                      channel: discord.TextChannel,
-                      title: str = "Title",
-                      description: str = "Description",
-                      color: str = "#9954DD",
-                      field_1_title: str = None,
-                      field_1_description: str = None,
-                      field_1_is_inline: bool = False,
-                      field_2_title: str = None,
-                      field_2_description: str = None,
-                      field_2_is_inline: bool = False,
-                      field_3_title: str = None,
-                      field_3_description: str = None,
-                      field_3_is_inline: bool = False,
-                      footer: str = None
-                      ):
+def make_embed(channel: discord.TextChannel,
+                title: str = "Title",
+                description: str = "Description",
+                color: str = "#9954DD",
+                field_1_title: str = None,
+                field_1_description: str = None,
+                field_1_is_inline: bool = False,
+                field_2_title: str = None,
+                field_2_description: str = None,
+                field_2_is_inline: bool = False,
+                field_3_title: str = None,
+                field_3_description: str = None,
+                field_3_is_inline: bool = False,
+                footer: str = None
+                ):
 
         # Convert hex color to discord.Color
         color = discord.Color(int(color.lstrip('#'), 16))
@@ -33,7 +32,6 @@ def make_embed(interaction: discord.Interaction,
                 if field_3_title and field_3_description:
                     embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
         if footer:
-            embed.set_footer(text=footer, icon_url=interaction.guild.icon.url)
+            embed.set_footer(text=footer, icon_url=guild.icon.url)
 
         channel.send(embed=embed)
-        interaction.response.send_message("Embed sent successfully!", ephemeral=True)

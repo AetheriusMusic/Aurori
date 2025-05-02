@@ -4,8 +4,8 @@ from discord import Intents
 from discord.ext import commands
 
 from data import *
-from commandss import *
-from taskss import *
+from commands import *
+from tasks import *
 
 import time
 
@@ -26,17 +26,24 @@ with open(TOKEN_PATH, "r") as token_file:
 # When the bot has connected to Discord
 @client.event
 async def on_ready():
-
     global guild
+    global user_logs_channel
+
+    # Initialize guild
     guild = client.get_guild(aether_music_id)
     if guild is None:
         print(f"Guild with ID {aether_music_id} not found.")
+        return
 
-    global user_logs_channel
+    # Initialize user logs channel
     user_logs_channel = client.get_channel(user_logs_channel_id)
     if user_logs_channel is None:
         print(f"Channel with ID {user_logs_channel_id} not found.")
-    
+        return
+
+    # Start logging tasks only after user_logs_channel is initialized
+    check_avatars.start(guild=guild, channel=user_logs_channel)
+    check_nicknames.start(guild=guild, channel=user_logs_channel)
 
     # Initialize the testing channel
     testing_channel = client.get_channel(testing_channel_id)
@@ -44,10 +51,6 @@ async def on_ready():
     print(f"{client.user} has connected to Discord!")
     if not testing_channel:
         print(f"Channel with ID `{testing_channel_id}` not found.")
-
-    # Start logging tasks
-    check_avatars.start(guild=guild)
-    check_nicknames.start(guild=guild)
 
     # Initialize user avatars and nicknames for all members in the guild
     for member in guild.members:
