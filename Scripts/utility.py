@@ -5,7 +5,8 @@ from data import *
 
 
 
-def make_embed(channel: discord.TextChannel,
+
+def make_embed(channel,
                 title: str = "Title",
                 description: str = "Description",
                 color: str = "#9954DD",
@@ -34,4 +35,4 @@ def make_embed(channel: discord.TextChannel,
         if footer:
             embed.set_footer(text=footer, icon_url=guild.icon.url)
 
-        channel.send(embed=embed)
+        return embed

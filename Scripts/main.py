@@ -1,13 +1,8 @@
 from pathlib import Path
 
-from discord import Intents
-from discord.ext import commands
-
 from data import *
 from commands import *
 from tasks import *
-
-import time
 
 
 

@@ -1,7 +1,4 @@
-from pathlib import Path
-
 import random
-import os
 import discord
 import aiohttp
 from discord import Intents, app_commands
