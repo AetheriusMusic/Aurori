@@ -2,7 +2,7 @@ import random
 import discord
 import aiohttp
 from discord import Intents, app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 from data import *
 

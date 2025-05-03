@@ -65,3 +65,34 @@ async def check_nicknames(guild, channel):
         else:
             # Store the nick if it's not already stored
             user_nicknames[member.id] = member.nick
+
+
+
+# Username update
+user_usernames = {}
+
+@tasks.loop(seconds=10)
+async def check_nicknames(guild, channel):
+
+    for member in guild.members:  # Iterate through all members in the guild
+        if member.id in user_usernames:
+            if member.name != user_usernames[member.id]:  # Compare stored username with current username
+                print(f"{member.name} changed their username!")
+                print(f"Old username: {user_usernames[member.id]}")
+                print(f"New username: {member.name}")
+                embed = make_embed(channel=channel,
+                           title="Username Update",
+                           description=f"{member.name} changed their username!",
+                           color="#53B6E0",
+                           field_1_title="Old username",
+                           field_1_description=user_usernames[member.id],
+                           field_2_title="New username",
+                           field_2_description=member.name)
+                await channel.send(embed=embed)
+                
+
+                # Update the stored nick
+                user_usernames[member.id] = member.name
+        else:
+            # Store the nick if it's not already stored
+            user_usernames[member.id] = member.name
