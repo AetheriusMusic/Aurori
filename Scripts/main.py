@@ -39,6 +39,7 @@ async def on_ready():
     # Start logging tasks only after user_logs_channel is initialized
     check_avatars.start(guild=guild, channel=user_logs_channel)
     check_nicknames.start(guild=guild, channel=user_logs_channel)
+    check_usernames.start(guild=guild, channel=user_logs_channel)
 
     # Initialize the testing channel
     testing_channel = client.get_channel(testing_channel_id)
@@ -51,6 +52,7 @@ async def on_ready():
     for member in guild.members:
         user_avatars[member.id] = member.avatar
         user_nicknames[member.id] = member.nick
+        user_usernames[member.id] = member.name
 
     # Add !regular commands
     client.add_command(regular_ping)
