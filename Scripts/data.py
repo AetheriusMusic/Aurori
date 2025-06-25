@@ -17,7 +17,7 @@ intents.presences = True        # Enable presence intent
 intents.members = True          # Required for fetching members
 intents.webhooks = True         # Required for sending webhooks
 
-client = commands.Bot(command_prefix="!", intents=intents)
+client = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 # Misc data
 guild = None
