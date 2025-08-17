@@ -1,29 +1,12 @@
 import random
 import discord
 import aiohttp
-from discord import Intents, app_commands
+from discord import app_commands
 from discord.ext import commands
 
 from data import *
 
 
-
-
-
-# Sets up Discord intents (permissions for the bot)
-intents = Intents.default()
-intents.message_content = True  # For reading message content
-intents.guilds = True           # For detecting guilds (servers)
-intents.presences = True        # Enable presence intent
-intents.members = True          # Required for fetching members
-intents.webhooks = True         # Required for sending webhooks
-
-# Sets up the bot client (connection with Discord)
-client = commands.Bot(command_prefix="!", intents=intents)
-guild_id = 1275409524643205212  # Aether Music server
-owner_id = 767363924734509059   # Aetherius' ID
-guild = None
-spamping_webhook_url = "https://discord.com/api/webhooks/1346566625591033886/oApOk5EeMufdPcExHaYslNSx6MxCJWhUR_JvS_P-XjCGG1sDc2fLg5-2mzADLLyQSMoZ"
 
 
 
@@ -45,19 +28,21 @@ async def slash_ping(interaction: discord.Interaction):
 
 # Regular !shutdown command
 @client.command(name="shutdown")
-@commands.is_owner()  # Restrict this command to the bot owner
 async def regular_shutdown(ctx):
-    await ctx.send("Shutting down...")
-    print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
-    await client.close()
-    print("Client closed successfully")
+    if ctx.author.id != AETHERIUS_ID:
+        print(f"Regular `!shutdown` command failed to execute by {ctx.author.name}")
+    elif ctx.author.id == AETHERIUS_ID:
+        await ctx.send("Shutting down...")
+        print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
+        await client.close()
+        print("Client closed successfully")
 
 # Slash /shutdown command
 @client.tree.command(name="shutdown", description="Shut down the bot")
 async def slash_shutdown(interaction: discord.Interaction):
 
-    if interaction.user.id != owner_id:
-        await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
         return
 
     await interaction.response.send_message("Shutting down...")
@@ -144,7 +129,10 @@ async def regular_avatar(ctx, user: discord.User = None):
 # Slash /avatar command
 @client.tree.command(name="avatar", description="Get a user's avatar")
 @app_commands.describe(user="The user to get the avatar of")
-async def slash_avatar(interaction: discord.Interaction, user: discord.User = None):
+async def slash_avatar(
+    interaction: discord.Interaction,
+    user: discord.User = None
+    ):
 
     user = user or interaction.user
     avatar_url = user.avatar.url
@@ -160,55 +148,6 @@ async def slash_avatar(interaction: discord.Interaction, user: discord.User = No
 
 
 
-# Regular !spamping command
-@client.command(name="spamping")
-@commands.is_owner()  # Restrict this command to the bot owner
-async def regular_spamping(ctx, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
-    try:
-
-        if times > 100:  # Prevent excessive spamming
-            times = 100
-            await ctx.send("You can't spam ping more than 100 times! (Limiting to 100...)")
-
-        user_mention = user.mention if user else ""
-        role_mention = role.mention if role else ""
-
-        if user_mention and role_mention:
-            ping_provided = f"{user_mention} and {role_mention}"
-        elif user_mention and not role_mention:
-            ping_provided = user_mention
-        elif role_mention and not user_mention:
-            ping_provided = role_mention
-        else:
-            ping_provided = False
-
-        message = f"{ping_provided} {text}"  # Custom message
-
-        await ctx.defer()  # Defer the response to give more time
-
-        if times > 1 and ping_provided:  # Check if user or role is provided
-
-            async with aiohttp.ClientSession() as session:
-                webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
-                
-                for _ in range(times):
-                    await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
-
-            await ctx.send(f"Successfully pinged {ping_provided} {times} times!")
-            print(f"Regular `!spamping` command successfully executed by {ctx.author.name}")
-        
-        if times < 1:
-            await ctx.send("Insert a value bigger than 1!")
-        if not ping_provided:
-            await ctx.send("Provide a user or a role to ping!")
-        if times > 100:
-            times = 100
-            await ctx.send("You can't spam ping more than 100 times! (Limit set to 100)")
-
-    except Exception as error:
-        print(f"An error occurred in the `!spamping` command: {error}")
-        await ctx.send(f"An error occurred while executing the command.\nError: **{error}**")
-
 
 
 # Slash /spamping command
@@ -217,20 +156,28 @@ async def regular_spamping(ctx, times: int, user: discord.User = None, role: dis
     times="Number of times to ping",
     user="The user to ping",
     role="The role to ping",
-    text="Custom message to include (default: \"Hello :3\")"
+    text="Custom message to include (default: \"Hello :3\")",
+    webhook_index="The channel to send the spamping in (1: General, 0: Silksong)"
 )
-async def slash_spamping(interaction: discord.Interaction, times: int, user: discord.User = None, role: discord.Role = None, text: str = "Hello :3"):
+async def slash_spamping(
+    interaction: discord.Interaction,
+    times: int,
+    user: discord.User = None,
+    role: discord.Role = None,
+    text: str = "Hello :3",
+    webhook_index: int = 0
+    ):
     try:
 
-        if interaction.user.id != owner_id:
-            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+        if interaction.user.id != AETHERIUS_ID:
+            await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
             return
 
         user_mention = user.mention if user else ""
         role_mention = role.mention if role else ""
 
         if user_mention and role_mention:
-            ping_provided = f"{user_mention} and {role_mention}"
+            ping_provided = f"{user_mention}" + f"{role_mention}"
         elif user_mention and not role_mention:
             ping_provided = user_mention
         elif role_mention and not user_mention:
@@ -244,14 +191,22 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
 
         if times > 1 and ping_provided:  # Check if user or role is provided
 
+
+            match webhook_url:
+                case 0: webhook_url = spamping_silksong_url
+                case 1: webhook_url = spamping_general_url
+                case _:
+                    await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
+                    webhook_url = spamping_silksong_url
+
             # Spamping using a webhook
             async with aiohttp.ClientSession() as session:
-                webhook = discord.Webhook.from_url(spamping_webhook_url, session=session)
+                spamping_webhook = discord.Webhook.from_url(webhook_url, session=session)
                 
                 for _ in range(times):
-                    await webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
+                    await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-                await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+                await interaction.followup.send(f"Successfully pinged {user_mention} and {role_mention} {times} times!", ephemeral=True)
                 print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
 
         if times < 1:
@@ -264,7 +219,7 @@ async def slash_spamping(interaction: discord.Interaction, times: int, user: dis
 
     except Exception as error:
         print(f"An error occurred in the `/spamping` command: {error}")
-        await interaction.response.send_message(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+        await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
 
 
 
@@ -306,11 +261,11 @@ async def slash_embed(interaction: discord.Interaction,
                       ):
     try:
 
-        if interaction.user.id != owner_id:
-            await interaction.response.send_message("You don't have permission to use this command!", ephemeral=True)
+        if interaction.user.id != AETHERIUS_ID:
+            await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
             return
 
-        # Convert hex color to discord.Color
+        # Convert Hex color to discord.Color
         color = discord.Color(int(color.lstrip('#'), 16))
 
         embed = discord.Embed(title=title, description=description, color=color)
@@ -328,4 +283,4 @@ async def slash_embed(interaction: discord.Interaction,
 
     except Exception as error:
         print(f"An error occurred in the `/embed` command: {error}")
-        await interaction.response.send_message(f"An error occurred while executing the command.\nError: **{error}**", ephemeral=True)
+        await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)

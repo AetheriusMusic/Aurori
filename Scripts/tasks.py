@@ -10,7 +10,7 @@ from utility import *
 # Avatar update
 user_avatars = {}
 
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=TASK_TIMER)
 async def check_avatars(guild, channel):
     for member in guild.members:  # Iterate through all members in the guild
         if member.id in user_avatars:
@@ -26,8 +26,8 @@ async def check_avatars(guild, channel):
                 embed = make_embed(
                     channel=channel,
                     title="Avatar Update",
-                    description=f"{member.name} changed their avatar!",
-                    color="#53B6E0",
+                    description=f"{member.name} changed their **avatar**!",
+                    color=USER_LOGS_COLOR,
                     field_1_title="Old avatar",
                     field_1_description=f"{old_avatar_url}",
                     field_2_title="New avatar",
@@ -53,26 +53,26 @@ async def check_avatars(guild, channel):
 # Nickname update
 user_nicknames = {}
 
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=TASK_TIMER)
 async def check_nicknames(guild, channel):
 
     for member in guild.members:  # Iterate through all members in the guild
         if member.id in user_nicknames:
-            if member.nick != user_nicknames[member.id]:  # Compare stored nickname with current nickname
-                print(f"{member.name} changed their nick!")
-                print(f"Old nickname: {user_nicknames[member.id]}")
+            if member.nick != user_nicknames[member.id]:  # Compare stored username with current username
+                print(f"{member.name} changed their nickname!")
+                print(f"Old nickname: {user_usernames[member.id]}")
                 print(f"New nickname: {member.nick}")
                 embed = make_embed(
                            channel=channel,
                            title="Nickname Update",
-                           description=f"{member.mention} changed their nickname!",
-                           color="#53B6E0",
+                           description=f"{member.mention} changed their **nickname**!",
+                           color=USER_LOGS_COLOR,
                            field_1_title="Old nickname",
                            field_1_description=user_nicknames[member.id],
                            field_2_title="New nickname",
                            field_2_description=member.nick)
 
-                embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
+                embed.set_author(name=member.nick, icon_url=member.avatar.url if member.avatar else None)
 
                 await channel.send(embed=embed)
                 
@@ -88,7 +88,7 @@ async def check_nicknames(guild, channel):
 # Username update
 user_usernames = {}
 
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=TASK_TIMER)
 async def check_usernames(guild, channel):
 
     for member in guild.members:  # Iterate through all members in the guild
@@ -100,8 +100,8 @@ async def check_usernames(guild, channel):
                 embed = make_embed(
                            channel=channel,
                            title="Username Update",
-                           description=f"{member.mention} changed their username!",
-                           color="#53B6E0",
+                           description=f"{member.mention} changed their **username**!",
+                           color= USER_LOGS_COLOR,
                            field_1_title="Old username",
                            field_1_description=user_usernames[member.id],
                            field_2_title="New username",

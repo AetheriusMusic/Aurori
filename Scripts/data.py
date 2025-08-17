@@ -20,10 +20,17 @@ intents.webhooks = True         # Required for sending webhooks
 client = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 # Misc data
-guild = None
-aether_music_id = 1275409524643205212
-aetherius_id = 767363924734509059
-aether_color = "#9954DD"
+GUILD = None
+AETHER_MUSIC_ID = 1275409524643205212
+AETHERIUS_ID = 767363924734509059
+
+# Colors
+AETHER_COLOR = "#9954DD"
+USER_LOGS_COLOR = "#53B6E0"
+
+ERROR_MESSAGE = "An error occurred while executing the command."
+NO_PERMISSION_MESSAGE = "You don't have permission to use this command!"
+TASK_TIMER = 10
 
 # Channel IDs
 testing_channel_id = 1328140497364975656

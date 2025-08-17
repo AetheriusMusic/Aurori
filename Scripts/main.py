@@ -25,9 +25,9 @@ async def on_ready():
     global user_logs_channel
 
     # Initialize guild
-    guild = client.get_guild(aether_music_id)
+    guild = client.get_guild(AETHER_MUSIC_ID)
     if guild is None:
-        print(f"Guild with ID {aether_music_id} not found.")
+        print(f"guild with ID {AETHER_MUSIC_ID} not found.")
         return
 
     # Initialize user logs channel
@@ -37,9 +37,9 @@ async def on_ready():
         return
 
     # Start logging tasks only after user_logs_channel is initialized
-    check_avatars.start(guild=guild, channel=user_logs_channel)
-    check_nicknames.start(guild=guild, channel=user_logs_channel)
-    check_usernames.start(guild=guild, channel=user_logs_channel)
+    check_avatars.start(guild, channel=user_logs_channel)
+    check_nicknames.start(guild, channel=user_logs_channel)
+    check_usernames.start(guild, channel=user_logs_channel)
 
     # Initialize the testing channel
     testing_channel = client.get_channel(testing_channel_id)
@@ -54,22 +54,9 @@ async def on_ready():
         user_nicknames[member.id] = member.nick
         user_usernames[member.id] = member.name
 
-    # Add !regular commands
-    client.add_command(regular_ping)
-    client.add_command(regular_shutdown)
-    client.add_command(regular_love)
-    client.add_command(regular_coinflip)
-    client.add_command(regular_avatar)
-    client.add_command(regular_spamping)
 
-    # Add /slash commands
-    client.tree.add_command(slash_ping)
-    client.tree.add_command(slash_shutdown)
-    client.tree.add_command(slash_love)
-    client.tree.add_command(slash_coinflip)
-    client.tree.add_command(slash_avatar)
-    client.tree.add_command(slash_spamping)
-    client.tree.add_command(slash_embed)
+
+
 
     # Sync /slash commands
     try:
