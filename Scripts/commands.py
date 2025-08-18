@@ -165,7 +165,7 @@ async def slash_spamping(
     user: discord.User = None,
     role: discord.Role = None,
     text: str = "Hello :3",
-    webhook_index: int = 0
+    webhook_index: int = None
     ):
     try:
 
@@ -177,7 +177,7 @@ async def slash_spamping(
         role_mention = role.mention if role else ""
 
         if user_mention and role_mention:
-            ping_provided = f"{user_mention}" + f"{role_mention}"
+            ping_provided = f"{user_mention}" + " and " f"{role_mention}"
         elif user_mention and not role_mention:
             ping_provided = user_mention
         elif role_mention and not user_mention:
@@ -195,6 +195,9 @@ async def slash_spamping(
             match webhook_index:
                 case 0: webhook_index = spamping_silksong_url
                 case 1: webhook_index = spamping_general_url
+                case None:
+                    await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
+                    webhook_index = spamping_silksong_url
                 case _:
                     await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
                     webhook_index = spamping_silksong_url
@@ -206,7 +209,7 @@ async def slash_spamping(
                 for _ in range(times):
                     await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-                await interaction.followup.send(f"Successfully pinged {user_mention} and {role_mention} {times} times!", ephemeral=True)
+                await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
                 print(f"Slash `/spamping` command successfully executed by {interaction.user.name}")
 
         if times < 1:
