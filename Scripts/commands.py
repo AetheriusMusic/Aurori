@@ -192,16 +192,16 @@ async def slash_spamping(
         if times > 1 and ping_provided:  # Check if user or role is provided
 
 
-            match webhook_url:
-                case 0: webhook_url = spamping_silksong_url
-                case 1: webhook_url = spamping_general_url
+            match webhook_index:
+                case 0: webhook_index = spamping_silksong_url
+                case 1: webhook_index = spamping_general_url
                 case _:
                     await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
-                    webhook_url = spamping_silksong_url
+                    webhook_index = spamping_silksong_url
 
             # Spamping using a webhook
             async with aiohttp.ClientSession() as session:
-                spamping_webhook = discord.Webhook.from_url(webhook_url, session=session)
+                spamping_webhook = discord.Webhook.from_url(webhook_index, session=session)
                 
                 for _ in range(times):
                     await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
