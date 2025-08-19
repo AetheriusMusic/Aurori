@@ -37,9 +37,9 @@ async def on_ready():
         return
 
     # Start logging tasks only after user_logs_channel is initialized
-    check_avatars.start(guild, channel=user_logs_channel)
-    check_nicknames.start(guild, channel=user_logs_channel)
-    check_usernames.start(guild, channel=user_logs_channel)
+    check_avatars.start(guild, client.get_channel(user_logs_channel_id))
+    check_nicknames.start(guild, client.get_channel(user_logs_channel_id))
+    check_usernames.start(guild, client.get_channel(user_logs_channel_id))
 
     # Initialize the testing channel
     testing_channel = client.get_channel(testing_channel_id)
