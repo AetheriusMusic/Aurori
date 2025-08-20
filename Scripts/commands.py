@@ -5,6 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from data import *
+from utility import *
 
 
 
@@ -23,32 +24,6 @@ async def slash_ping(interaction: discord.Interaction):
     latency = round(interaction.client.latency * 1000)  # Convert latency to milliseconds
     await interaction.response.send_message(f"Pong! 🏓 Latency: {latency}ms")
     print(f"Slash `/ping` command successfully executed by {interaction.user.name}")
-
-
-
-# Regular !shutdown command
-@client.command(name="shutdown")
-async def regular_shutdown(ctx):
-    if ctx.author.id != AETHERIUS_ID:
-        print(f"Regular `!shutdown` command failed to execute by {ctx.author.name}")
-    elif ctx.author.id == AETHERIUS_ID:
-        await ctx.send("Shutting down...")
-        print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
-        await client.close()
-        print("Client closed successfully")
-
-# Slash /shutdown command
-@client.tree.command(name="shutdown", description="Shut down the bot")
-async def slash_shutdown(interaction: discord.Interaction):
-
-    if interaction.user.id != AETHERIUS_ID:
-        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
-        return
-
-    await interaction.response.send_message("Shutting down...")
-    print(f"Slash `/shutdown` command successfully executed by {interaction.user.name}")
-    await client.close()
-    print("Client closed successfully")
 
 
 
@@ -148,6 +123,32 @@ async def slash_avatar(
 
 
 
+# Regular !shutdown command
+@client.command(name="shutdown")
+async def regular_shutdown(ctx):
+    if ctx.author.id != AETHERIUS_ID:
+        print(f"Regular `!shutdown` command failed to execute by {ctx.author.name}")
+    elif ctx.author.id == AETHERIUS_ID:
+        await ctx.send("Shutting down...")
+        print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
+        await client.close()
+        print("Client closed successfully")
+
+# Slash /shutdown command
+@client.tree.command(name="shutdown", description="Shut down the bot")
+async def slash_shutdown(interaction: discord.Interaction):
+
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+        return
+
+    await interaction.response.send_message("Shutting down...")
+    print(f"Slash `/shutdown` command successfully executed by {interaction.user.name}")
+    await client.close()
+    print("Client closed successfully")
+
+
+
 
 
 # Slash /spamping command
@@ -185,11 +186,11 @@ async def slash_spamping(
         else:
             ping_provided = False
 
-        message = f"{ping_provided} {text}"  # Custom message
+        message = f"{ping_provided} {text}"
 
-        await interaction.response.defer()  # Defer the response to give more time
+        await interaction.response.defer()
 
-        if times > 1 and ping_provided:  # Check if user or role is provided
+        if times > 1 and ping_provided:
 
 
             match webhook_index:
@@ -268,21 +269,29 @@ async def slash_embed(interaction: discord.Interaction,
             await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
             return
 
-        # Convert Hex color to discord.Color
-        color = discord.Color(int(color.lstrip('#'), 16))
+        elif interaction.user.id == AETHERIUS_ID:
 
-        embed = discord.Embed(title=title, description=description, color=color)
-        if field_1_title and field_1_description:
-            embed.add_field(name=field_1_title, value=field_1_description, inline=field_1_is_inline)
-            if field_2_title and field_2_description:
-                embed.add_field(name=field_2_title, value=field_2_description, inline=field_2_is_inline)
-                if field_3_title and field_3_description:
-                    embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
-        if footer:
-            embed.set_footer(text=footer, icon_url=interaction.guild.icon.url)
+            embed = make_embed(
+                            channel,
+                            title,
+                            description,
+                            color,
+                            field_1_title,
+                                field_1_description,
+                                field_1_is_inline,
+                                field_2_title,
+                                field_2_description,
+                                field_2_is_inline,
+                                field_3_title,
+                                field_3_description,
+                                field_3_is_inline,
+                                footer,
+                            )
 
-        await channel.send(embed=embed)
-        await interaction.response.send_message("Embed sent successfully!", ephemeral=True)
+            await channel.send(embed=embed)
+            await interaction.response.defer()
+            await interaction.followup.send("Embed sent succesfully!", ephemeral=True)
+            print(f"Slash `/embed` command successfully executed by {interaction.user.name}")
 
     except Exception as error:
         print(f"An error occurred in the `/embed` command: {error}")

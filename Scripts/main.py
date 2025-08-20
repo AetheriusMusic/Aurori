@@ -43,7 +43,7 @@ async def on_ready():
 
     # Initialize the testing channel
     testing_channel = client.get_channel(testing_channel_id)
-    await testing_channel.send("I'm online! 🤓")
+    await testing_channel.send("I'm online! <:scug_silly:1406051577365794816>")
     print(f"{client.user} has connected to Discord!")
     if not testing_channel:
         print(f"Channel with ID `{testing_channel_id}` not found.")
@@ -74,11 +74,16 @@ async def on_ready():
 # On message
 @client.event
 async def on_message(message):
-    # Handle specific messages in the SCP: PyLab channel
+    # SCP: PyLab channel
     if message.channel.id == 1359200351282008236:
         thread = await message.channel.create_thread(name=f"{message.author.name}'s idea", message=message)
         await thread.send(f"Thank you {message.author.mention}! If you want to discuss anything, say it here, and don't forget to publish the message you sent!")
         print(f"SCP: PyLab thread created by {message.author.name}")
+
+    # Chat with Aetherius
+    if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
+        await message.channel.send(random.choice(chat_responses))
+
 
     # Allow the bot to process commands
     await client.process_commands(message)

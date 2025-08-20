@@ -24,14 +24,14 @@ async def check_avatars(guild, channel):
 
                 # Create the embed
                 embed = make_embed(
-                    channel=client.get_channel(user_logs_channel_id),
-                    title="Avatar Update",
-                    description=f"{member.name} changed their **avatar**!",
-                    color=USER_LOGS_COLOR,
-                    field_1_title="Old avatar",
-                    field_1_description=f"{old_avatar_url}",
-                    field_2_title="New avatar",
-                    field_2_description=f"{new_avatar_url}"
+                                channel=client.get_channel(user_logs_channel_id),
+                                title="Avatar Update",
+                                description=f"{member.name} changed their **avatar**!",
+                                color=USER_LOGS_COLOR,
+                                field_1_title="Old avatar",
+                                field_1_description=f"{old_avatar_url}",
+                                field_2_title="New avatar",
+                                field_2_description=f"{new_avatar_url}"
                 )
 
                 embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
@@ -63,14 +63,15 @@ async def check_nicknames(guild, channel):
                 print(f"Old nickname: {user_usernames[member.id]}")
                 print(f"New nickname: {member.nick}")
                 embed = make_embed(
-                           channel=client.get_channel(user_logs_channel_id),
-                           title="Nickname Update",
-                           description=f"{member.mention} changed their **nickname**!",
-                           color=USER_LOGS_COLOR,
-                           field_1_title="Old nickname",
-                           field_1_description=user_nicknames[member.id],
-                           field_2_title="New nickname",
-                           field_2_description=member.nick)
+                                channel=client.get_channel(user_logs_channel_id),
+                                title="Nickname Update",
+                                description=f"{member.mention} changed their **nickname**!",
+                                color=USER_LOGS_COLOR,
+                                field_1_title="Old nickname",
+                                field_1_description=user_nicknames[member.id],
+                                field_2_title="New nickname",
+                                field_2_description=member.nick
+                )
 
                 embed.set_author(name=member.nick, icon_url=member.avatar.url if member.avatar else None)
 
@@ -98,14 +99,15 @@ async def check_usernames(guild, channel):
                 print(f"Old username: {user_usernames[member.id]}")
                 print(f"New username: {member.name}")
                 embed = make_embed(
-                           channel=client.get_channel(user_logs_channel_id),
-                           title="Username Update",
-                           description=f"{member.mention} changed their **username**!",
-                           color= USER_LOGS_COLOR,
-                           field_1_title="Old username",
-                           field_1_description=user_usernames[member.id],
-                           field_2_title="New username",
-                           field_2_description=member.name)
+                                channel=client.get_channel(user_logs_channel_id),
+                                title="Username Update",
+                                description=f"{member.mention} changed their **username**!",
+                                color= USER_LOGS_COLOR,
+                                field_1_title="Old username",
+                                field_1_description=user_usernames[member.id],
+                                field_2_title="New username",
+                                field_2_description=member.name
+                )
 
                 embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
 

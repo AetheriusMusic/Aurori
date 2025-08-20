@@ -6,6 +6,28 @@ from data import *
 
 
 
+chat_responses = [
+                "<:scug_silly:1406051577365794816>",
+                "I feel so sigma",
+                "Wawa",
+                "Perhaps you should consider not breathing.",
+                "I'm silly",
+                "I'm Evil Larry",
+                "Human, I remember your'e **genocides**.",
+                "**IT'S TV TIME!**",
+                "Pandemonium door 30 <:pandemonium:1341859271876284457>",
+                "Womp womp",
+                "Rain World is peak",
+                "Hollow Knight is peak",
+                "Celeste is peak",
+                "You too",
+                "||[ R E D A C T E D ]||",
+                "Check behind you.",
+                "**THE MIMIIIIIIIIIIC**"
+]
+
+
+
 def make_embed(channel,
                 title: str = "Title",
                 description: str = "Description",
