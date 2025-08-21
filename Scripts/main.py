@@ -80,9 +80,15 @@ async def on_message(message):
         await thread.send(f"Thank you {message.author.mention}! If you want to discuss anything, say it here, and don't forget to publish the message you sent!")
         print(f"SCP: PyLab thread created by {message.author.name}")
 
-    # Chat with Aetherius
+    # Chat with members
     if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
         await message.channel.send(random.choice(chat_responses))
+
+    if message.author.id == DISBOARD_ID and message.embeds:
+        embed = message.embeds[0]
+
+        if embed.description and "Bump done" in embed.description:
+            await message.channel.send("Thank you for bumping the server! <:scug_silly:1406051577365794816>")
 
 
     # Allow the bot to process commands
