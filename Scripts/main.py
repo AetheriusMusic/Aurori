@@ -8,97 +8,77 @@ from tasks import *
 
 
 
-TOKEN_FILENAME = ".token"
 TOKEN_PATH = Path(__file__).resolve().parent.parent / ".token"
 
 with open(TOKEN_PATH, "r") as token_file:
     TOKEN = token_file.read().strip()
 
+CHAT_RESPONSES_PATH = Path(__file__).resolve().parent.parent / "Data/chat_responses.txt"
+
+with open(CHAT_RESPONSES_PATH, "r", encoding="utf-8") as chat_responses_file:
+    chat_responses = [line.strip() for line in chat_responses_file]
 
 
 
 
-# When the bot has connected to Discord
+
+
 @client.event
 async def on_ready():
-    global guild
+    global aether_music
     global user_logs_channel
 
-    # Initialize guild
-    guild = client.get_guild(AETHER_MUSIC_ID)
-    if guild is None:
-        print(f"guild with ID {AETHER_MUSIC_ID} not found.")
-        return
+    # Guild initialization
+    aether_music = client.get_guild(AETHER_MUSIC_ID)
 
-    # Initialize user logs channel
-    user_logs_channel = client.get_channel(user_logs_channel_id)
-    if user_logs_channel is None:
-        print(f"Channel with ID {user_logs_channel_id} not found.")
-        return
-
-    # Start logging tasks only after user_logs_channel is initialized
-    check_avatars.start(guild, client.get_channel(user_logs_channel_id))
-    check_nicknames.start(guild, client.get_channel(user_logs_channel_id))
-    check_usernames.start(guild, client.get_channel(user_logs_channel_id))
-
-    # Initialize the testing channel
-    testing_channel = client.get_channel(testing_channel_id)
+    # Channels initialization
+    user_logs_channel = client.get_channel(USER_LOGS_CHANNEL_ID)
+    testing_channel = client.get_channel(TESTING_CHANNEL_ID)
     await testing_channel.send("I'm online! <:scug_silly:1406051577365794816>")
-    print(f"{client.user} has connected to Discord!")
-    if not testing_channel:
-        print(f"Channel with ID `{testing_channel_id}` not found.")
+    print(f"{client.user} has succesfully connected to Aether Music!")
 
-    # Initialize user avatars and nicknames for all members in the guild
-    for member in guild.members:
+    # Logging tasks startup
+    for member in aether_music.members:
         user_avatars[member.id] = member.avatar
         user_nicknames[member.id] = member.nick
         user_usernames[member.id] = member.name
+    check_avatars.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
+    check_nicknames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
+    check_usernames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
 
-
-
-
-
-    # Sync /slash commands
+    # /Slash commands registration
     try:
-        await client.tree.sync()
-        print(f"Syncing /slash commands to {guild.name}...")
         for command in client.tree.get_commands():
-            print(f"Registered /slash command: /{command.name}")
+            print(f"Succesfully registered /slash command: /{command.name}")
     except Exception as error:
-            print(f"Failed to sync /slash commands: {error}")
+            error_print(f"Failed to register /slash commands: {error}")
 
 
 
 
 
-# On message
 @client.event
 async def on_message(message):
-    # SCP: PyLab channel
-    if message.channel.id == 1359200351282008236:
-        thread = await message.channel.create_thread(name=f"{message.author.name}'s idea", message=message)
-        await thread.send(f"Thank you {message.author.mention}! If you want to discuss anything, say it here, and don't forget to publish the message you sent!")
-        print(f"SCP: PyLab thread created by {message.author.name}")
 
     # Chat with members
     if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
         await message.channel.send(random.choice(chat_responses))
 
+    # Bump thanking
     if message.author.id == DISBOARD_ID and message.embeds:
         embed = message.embeds[0]
-
         if embed.description and "Bump done" in embed.description:
             await message.channel.send("Thank you for bumping the server! <:scug_silly:1406051577365794816>")
 
 
-    # Allow the bot to process commands
+
+    # Commands processing permission
     await client.process_commands(message)
 
 
 
 
 
-# On disconnect
 @client.event
 async def on_disconnect():
     print(f"{client.user} has disconnected from Discord!")
@@ -107,7 +87,7 @@ async def on_disconnect():
 
 
 
-# Function to start the bot
+# Bot startup
 def bot_startup():
     client.run(TOKEN)
 

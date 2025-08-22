@@ -35,8 +35,8 @@ NO_PERMISSION_MESSAGE = "You don't have permission to use this command!"
 TASK_TIMER = 10
 
 # Channel IDs
-testing_channel_id = 1328140497364975656
-user_logs_channel_id = 1292539484201685012
+TESTING_CHANNEL_ID = 1328140497364975656
+USER_LOGS_CHANNEL_ID = 1292539484201685012
 
 # Channels
 user_logs_channel = None

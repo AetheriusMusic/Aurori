@@ -24,7 +24,7 @@ async def check_avatars(guild, channel):
 
                 # Create the embed
                 embed = make_embed(
-                                channel=client.get_channel(user_logs_channel_id),
+                                channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                 title="Avatar Update",
                                 description=f"{member.name} changed their **avatar**!",
                                 color=USER_LOGS_COLOR,
@@ -63,7 +63,7 @@ async def check_nicknames(guild, channel):
                 print(f"Old nickname: {user_usernames[member.id]}")
                 print(f"New nickname: {member.nick}")
                 embed = make_embed(
-                                channel=client.get_channel(user_logs_channel_id),
+                                channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                 title="Nickname Update",
                                 description=f"{member.mention} changed their **nickname**!",
                                 color=USER_LOGS_COLOR,
@@ -99,7 +99,7 @@ async def check_usernames(guild, channel):
                 print(f"Old username: {user_usernames[member.id]}")
                 print(f"New username: {member.name}")
                 embed = make_embed(
-                                channel=client.get_channel(user_logs_channel_id),
+                                channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                 title="Username Update",
                                 description=f"{member.mention} changed their **username**!",
                                 color= USER_LOGS_COLOR,
