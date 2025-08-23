@@ -296,3 +296,29 @@ async def slash_embed(interaction: discord.Interaction,
     except Exception as error:
         print(f"An error occurred in the `/embed` command: {error}")
         await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
+
+
+
+
+
+# Slash /ticket_setup command
+@client.tree.command(name="ticketsetup", description="Sets up the ticket system for the current channel")
+async def slash_ticket_setup(interaction: discord.Interaction):
+    from tickets import SupportTicketView
+
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+        return
+
+    embed = make_embed(
+            channel=interaction.channel,
+            title="Support ticket",
+            description="Open a ticket to request support to the server Staff!",
+            color=SUPPORT_TICKET_COLOR
+        )
+
+    await interaction.channel.send(embed=embed, view=SupportTicketView())
+
+    await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
+
+    print(f"Slash /ticketsetup command succesfully executed by {interaction.user.name}")

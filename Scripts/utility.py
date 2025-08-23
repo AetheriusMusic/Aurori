@@ -41,6 +41,6 @@ def make_embed(channel,
                 if field_3_title and field_3_description:
                     embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
         if footer:
-            embed.set_footer(text=footer, icon_url=GUILD.icon.url)
+            embed.set_footer(text=footer, icon_url=aether_music.icon.url)
 
         return embed

@@ -3,6 +3,7 @@ from pathlib import Path
 from data import *
 from commands import *
 from tasks import *
+from tickets import *
 
 
 
@@ -47,11 +48,16 @@ async def on_ready():
     check_usernames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
 
     # /Slash commands registration
+    await client.tree.sync()
+
     try:
         for command in client.tree.get_commands():
             print(f"Succesfully registered /slash command: /{command.name}")
     except Exception as error:
             error_print(f"Failed to register /slash commands: {error}")
+
+    # Views reassignment
+    client.add_view(SupportTicketView())
 
 
 
@@ -87,7 +93,6 @@ async def on_disconnect():
 
 
 
-# Bot startup
 def bot_startup():
     client.run(TOKEN)
 
