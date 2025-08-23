@@ -139,7 +139,7 @@ async def regular_shutdown(ctx):
 async def slash_shutdown(interaction: discord.Interaction):
 
     if interaction.user.id != AETHERIUS_ID:
-        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
 
     await interaction.response.send_message("Shutting down...")
@@ -171,7 +171,7 @@ async def slash_spamping(
     try:
 
         if interaction.user.id != AETHERIUS_ID:
-            await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+            await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
             return
 
         user_mention = user.mention if user else ""
@@ -188,7 +188,7 @@ async def slash_spamping(
 
         message = f"{ping_provided} {text}"
 
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         if times > 1 and ping_provided:
 
@@ -266,7 +266,7 @@ async def slash_embed(interaction: discord.Interaction,
     try:
 
         if interaction.user.id != AETHERIUS_ID:
-            await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+            await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
             return
 
         elif interaction.user.id == AETHERIUS_ID:
@@ -307,7 +307,7 @@ async def slash_ticket_setup(interaction: discord.Interaction):
     from tickets import SupportTicketView
 
     if interaction.user.id != AETHERIUS_ID:
-        await interaction.response.send_message({NO_PERMISSION_MESSAGE}, ephemeral=True)
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
 
     embed = make_embed(

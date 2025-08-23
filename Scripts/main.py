@@ -57,6 +57,7 @@ async def on_ready():
             error_print(f"Failed to register /slash commands: {error}")
 
     # Views reassignment
+    client.add_view(CloseTicketView())
     client.add_view(SupportTicketView())
 
 
@@ -69,6 +70,8 @@ async def on_message(message):
     # Chat with members
     if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
         await message.channel.send(random.choice(chat_responses))
+    if "youtube.com" in message.content or "youtu.be" in message.content:
+        await message.edit(suppress=True)
 
     # Bump thanking
     if message.author.id == DISBOARD_ID and message.embeds:
