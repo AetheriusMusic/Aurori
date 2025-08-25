@@ -128,11 +128,12 @@ async def slash_avatar(
 async def regular_shutdown(ctx):
     if ctx.author.id != AETHERIUS_ID:
         print(f"Regular `!shutdown` command failed to execute by {ctx.author.name}")
-    elif ctx.author.id == AETHERIUS_ID:
-        await ctx.send("Shutting down...")
-        print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
-        await client.close()
-        print("Client closed successfully")
+        return
+
+    await ctx.send("Shutting down...")
+    print(f"Regular `!shutdown` command successfully executed by {ctx.author.name}")
+    await client.close()
+    print("Client closed successfully")
 
 # Slash /shutdown command
 @client.tree.command(name="shutdown", description="Shut down the bot")

@@ -70,7 +70,7 @@ async def on_message(message):
     # Chat with members
     if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
         await message.channel.send(random.choice(chat_responses))
-    if "youtube.com" in message.content or "youtu.be" in message.content:
+    if "[Check this out!](https://youtu.be/xvFZjo5PgG0)" in message.content and message.author.id == AURORI_ID:
         await message.edit(suppress=True)
 
     # Bump thanking
