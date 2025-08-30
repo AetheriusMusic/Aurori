@@ -4,6 +4,7 @@ from data import *
 from commands import *
 from tasks import *
 from tickets import *
+from self_roles import *
 
 
 
@@ -59,6 +60,8 @@ async def on_ready():
     # Views reassignment
     client.add_view(CloseTicketView())
     client.add_view(SupportTicketView())
+    client.add_view(SelfRolesMiscView())
+    client.add_view(SelfRolesPingView())
 
 
 

@@ -19,7 +19,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -34,7 +34,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -49,7 +49,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -64,7 +64,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -79,7 +79,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -94,7 +94,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -109,7 +109,7 @@ class SelfRolesMiscView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -130,7 +130,7 @@ class SelfRolesPingView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -145,7 +145,7 @@ class SelfRolesPingView(discord.ui.View):
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
@@ -155,12 +155,12 @@ class SelfRolesPingView(discord.ui.View):
     async def gaming_ping_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         guild = interaction.guild
         user = interaction.user
-        role = guild.get_role(POLL_PING_ID)
+        role = guild.get_role(GAMING_PING_ROLE_ID)
 
         if role in user.roles:
             await user.remove_roles(role)
             await interaction.response.send_message(f"❌ Succesfully removed the role: {role.mention}", ephemeral=True)
-            print(f"Succesfully given the self role {role.name} to {user.name}")
+            print(f"Succesfully removed the self role {role.name} to {user.name}")
         else:
             await user.add_roles(role)
             await interaction.response.send_message(f"✅ Succesfully given you the role: {role.mention}", ephemeral=True)
