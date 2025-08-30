@@ -6,11 +6,32 @@ from data import *
 
 
 
+class CloseTicketView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="🔒 Close Ticket", style=discord.ButtonStyle.red, custom_id="close_ticket")
+
+    async def close_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+        guild = interaction.guild
+        staff_role = guild.get_role(STAFF_ROLE_ID)
+
+        if staff_role not in interaction.user.roles:
+            await interaction.response.send_message("❌ Only Staff can close the ticket!", ephemeral=True)
+            return
+
+        await interaction.channel.delete()
+        print(f"Ticket closed by {interaction.user.name}")
+
+
+
 class SupportTicketView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
     @discord.ui.button(label="🆘 Support Ticket", style=discord.ButtonStyle.green, custom_id="support_ticket")
+
     async def support_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
 
         guild = interaction.guild
@@ -42,22 +63,3 @@ class SupportTicketView(discord.ui.View):
         await interaction.response.send_message(f"✅ Your ticket has been created: {support_ticket_channel.mention}", ephemeral=True)
 
         print(f"Support ticket succesfully created by {user.name}")
-
-
-
-class CloseTicketView(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None)
-
-    @discord.ui.button(label="🔒 Close Ticket", style=discord.ButtonStyle.red, custom_id="close_ticket")
-    async def close_ticket(self, interaction: discord.Interaction, button: discord.ui.Button):
-
-        guild = interaction.guild
-        staff_role = guild.get_role(STAFF_ROLE_ID)
-
-        if staff_role not in interaction.user.roles:
-            await interaction.response.send_message("❌ Only Staff can close the ticket!", ephemeral=True)
-            return
-
-        await interaction.channel.delete()
-        print(f"Ticket closed by {interaction.user.name}")

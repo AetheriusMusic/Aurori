@@ -290,7 +290,7 @@ async def slash_embed(interaction: discord.Interaction,
                             )
 
             await channel.send(embed=embed)
-            await interaction.response.defer()
+            await interaction.response.defer(ephemeral=True)
             await interaction.followup.send("Embed sent succesfully!", ephemeral=True)
             print(f"Slash `/embed` command successfully executed by {interaction.user.name}")
 
@@ -302,7 +302,7 @@ async def slash_embed(interaction: discord.Interaction,
 
 
 
-# Slash /ticket_setup command
+# Slash /ticketsetup command
 @client.tree.command(name="ticketsetup", description="Sets up the ticket system for the current channel")
 async def slash_ticket_setup(interaction: discord.Interaction):
     from tickets import SupportTicketView
@@ -323,3 +323,40 @@ async def slash_ticket_setup(interaction: discord.Interaction):
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
     print(f"Slash /ticketsetup command succesfully executed by {interaction.user.name}")
+
+
+
+# Slash /selfrolessetup command
+@client.tree.command(name="selfrolessetup", description="Sets up the self roles for the current channel")
+async def slash_self_roles_setup(interaction: discord.Interaction):
+    from self_roles import SelfRolesMiscView
+    from self_roles import SelfRolesPingView
+
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
+
+    embed_misc = make_embed(
+            channel=interaction.channel,
+            title="MISC ROLES",
+            description="Are you looking for a way to customize your experience in the server?\nClick on the buttons below to get your roles!\nTo remove them simply click the button again!",
+            field_1_title="Avalaible roles:",
+            field_1_description="🎵 Musician\n🎨 Artist\n🎮 Gamer\n 💻Coder\n📸 Photographer\n✍️ Writer\n📚 Lore Hunter",            
+            color="#3BA0FF"
+        )
+
+    embed_ping = make_embed(
+            channel=interaction.channel,
+            title="PING ROLES",
+            description="Wanna receive pings for specific situations?\nClick the buttons to receive them!\nTo remove them simply click the button again!",
+            field_1_title="Avalaible roles:",
+            field_1_description="🎶 Release Ping\n📊 Poll Ping\n🕹️ Gaming Ping",
+            color="#6F40E6"
+        )
+
+    await interaction.channel.send(embed=embed_misc, view=SelfRolesMiscView())
+    await interaction.channel.send(embed=embed_ping, view=SelfRolesPingView())
+
+    await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
+
+    print(f"Slash /selfrolessetup command succesfully executed by {interaction.user.name}")

@@ -31,7 +31,7 @@ def make_embed(channel,
                 ):
 
         # Convert hex color to discord.Color
-        color = discord.Color(int(color.lstrip('#'), 16))
+        color = discord.Color(int(color.lstrip("#"), 16))
 
         embed = discord.Embed(title=title, description=description, color=color)
         if field_1_title and field_1_description:
@@ -41,6 +41,7 @@ def make_embed(channel,
                 if field_3_title and field_3_description:
                     embed.add_field(name=field_3_title, value=field_3_description, inline=field_3_is_inline)
         if footer:
-            embed.set_footer(text=footer, icon_url=aether_music.icon.url)
+            guild = client.get_guild(AETHER_MUSIC_ID)
+            embed.set_footer(text=footer, icon_url=guild.icon.url)
 
         return embed
