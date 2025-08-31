@@ -36,7 +36,6 @@ async def on_ready():
     # Channels initialization
     user_logs_channel = client.get_channel(USER_LOGS_CHANNEL_ID)
     testing_channel = client.get_channel(TESTING_CHANNEL_ID)
-    await testing_channel.send("I'm online! <:scug_silly:1406051577365794816>")
     print(f"{client.user} has succesfully connected to Aether Music!")
 
     # Logging tasks startup
@@ -62,6 +61,8 @@ async def on_ready():
     client.add_view(SupportTicketView())
     client.add_view(SelfRolesMiscView())
     client.add_view(SelfRolesPingView())
+
+    await testing_channel.send("I'm online and ready! <:scug_silly:1406051577365794816>")
 
 
 
