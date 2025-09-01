@@ -52,10 +52,10 @@ class CloseTicketView(discord.ui.View):
                 if embed_info:
                     parts.append(f"[Embed: {' | '.join(embed_info)}]")
 
-            content = " ".join(parts) if parts else "[No Content]"
+            content = " ".join(parts)
             messages.append(f"[{timestamp}] {author}: {content}")
 
-        transcripts_dir = Path(__file__).resolve().parent.parent / "Ticket Transcripts"
+        transcripts_dir = Path(__file__).resolve().parent.parent / "Data/Ticket Transcripts"
         transcripts_dir.mkdir(parents=True, exist_ok=True)
 
         attachments_dir = transcripts_dir / "Attachments"

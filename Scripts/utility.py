@@ -30,7 +30,7 @@ def make_embed(channel,
                 footer: str = None
                 ):
 
-        # Convert hex color to discord.Color
+        # Hex color to discord.Color
         color = discord.Color(int(color.lstrip("#"), 16))
 
         embed = discord.Embed(title=title, description=description, color=color)
