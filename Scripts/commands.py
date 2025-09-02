@@ -13,34 +13,38 @@ from utility import *
 # Regular !info command
 @client.command(name="info")
 async def regular_info(ctx):
-    embed = make_embed(channel=ctx.channel,
+    embed = make_embed(
+                channel=ctx.channel,
                 color=AURORI_COLOR,
                 title="Aurori",
                 description="I am Aurori, a fun bot developed for many purposes, varying from silly commands to moderation ones! <:scug_silly:1406051577365794816>",
                 field_1_title="Bot Developer:",
                 field_1_is_inline=True,
                 field_1_description="Aetherius",
-                field_2_title="Developed using",
+                field_2_title="Developed using:",
                 field_2_is_inline=True,
-                field_2_description="Python, thanks to discord.py")
+                field_2_description="Python, thanks to discord.py"
+                )
     await ctx.send(embed=embed)
-    print(f"Regular !info command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
 
 # Slash /info command
 @client.tree.command(name="info", description="Check the bot's most important informations")
 async def slash_info(interaction: discord.Interaction):
-    embed = make_embed(channel=interaction.channel,
+    embed = make_embed(
+                channel=interaction.channel,
                 color=AURORI_COLOR,
                 title="Aurori",
                 description="I am Aurori, a fun bot developed for many purposes, varying from silly commands to moderation ones!",
                 field_1_title="Bot Developer:",
                 field_1_is_inline=True,
                 field_1_description="Aetherius",
-                field_2_title="Developed using",
+                field_2_title="Developed using:",
                 field_2_is_inline=True,
-                field_2_description="Python, thanks to discord.py")
+                field_2_description="Python, thanks to discord.py"
+                )
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /info command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -49,14 +53,14 @@ async def slash_info(interaction: discord.Interaction):
 async def regular_ping(ctx):
     latency = round(ctx.bot.latency * 1000)
     await ctx.send(f"Pong! 🏓 Latency: **{latency}** ms")
-    print(f"Regular !ping command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
 
 # Slash /ping command
 @client.tree.command(name="ping", description="Check the bot's latency")
 async def slash_ping(interaction: discord.Interaction):
     latency = round(interaction.client.latency * 1000)
     await interaction.response.send_message(f"Pong! 🏓 Latency: **{latency}** ms")
-    print(f"Slash /ping command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -74,7 +78,7 @@ async def regular_love(ctx):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
-    print(f"Regular !love command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
 
 # Slash /love command
 @client.tree.command(name="love", description="Let the bot show you some love")
@@ -90,7 +94,7 @@ async def slash_love(interaction: discord.Interaction):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
-    print(f"Slash /love command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -101,7 +105,7 @@ async def regular_coinflip(ctx):
     random_output = ("heads", "tails")
 
     await ctx.send(f"You got {random.choice(random_output)}!")
-    print(f"Regular !coinflip command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
 
 
 
@@ -112,7 +116,7 @@ async def slash_coinflip(interaction: discord.Interaction):
     random_output = ("heads", "tails")
 
     await interaction.response.send_message(f"You got {random.choice(random_output)}!")
-    print(f"Slash /coinflip command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -127,7 +131,7 @@ async def regular_avatar(ctx, user: discord.User = None):
     embed.set_image(url=avatar_url)
 
     await ctx.send(embed=embed)
-    print(f"Regular !avatar command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
 
 
 
@@ -146,7 +150,7 @@ async def slash_avatar(
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /avatar command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -158,7 +162,7 @@ async def regular_shutdown(ctx):
         return
 
     await ctx.send("Shutting down...")
-    print(f"Regular !shutdown command successfully executed by {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
     await client.close()
     print("Client closed successfully")
 
@@ -171,7 +175,7 @@ async def slash_shutdown(interaction: discord.Interaction):
         return
 
     await interaction.response.send_message("Shutting down...")
-    print(f"Slash /shutdown command successfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
     await client.close()
     print("Client closed successfully")
 
@@ -239,7 +243,7 @@ async def slash_spamping(
                     await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
                 await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
-                print(f"Slash /spamping command successfully executed by {interaction.user.name}")
+                print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
         if times < 1:
             await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
@@ -250,7 +254,7 @@ async def slash_spamping(
             await interaction.followup.send("You can't spam ping more than 100 times! (Limit set to 100)", ephemeral=True)
 
     except Exception as error:
-        print(f"An error occurred in the /spamping command: {error}")
+        print(f"An error occurred in the /{interaction.command.name} command: {error}")
         await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
 
 
@@ -313,16 +317,16 @@ async def slash_embed(interaction: discord.Interaction,
                             field_3_title,
                             field_3_description,
                             field_3_is_inline,
-                            footer,
+                            footer
                             )
 
             await channel.send(embed=embed)
             await interaction.response.defer(ephemeral=True)
             await interaction.followup.send("Embed sent succesfully!", ephemeral=True)
-            print(f"Slash /embed command successfully executed by {interaction.user.name}")
+            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
     except Exception as error:
-        print(f"An error occurred in the /embed command: {error}")
+        print(f"An error occurred in the /{interaction.command.name} command: {error}")
         await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
 
 
@@ -349,7 +353,7 @@ async def slash_ticket_setup(interaction: discord.Interaction):
 
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /ticketsetup command succesfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -369,7 +373,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
             description="Are you looking for a way to customize your experience in the server?\nClick on the buttons below to get your roles!\nTo remove them simply click the button again!",
             field_1_title="Avalaible roles:",
             field_1_description="🎵 Musician\n🎨 Artist\n🎮 Gamer\n 💻Coder\n📸 Photographer\n✍️ Writer\n📚 Lore Hunter",            
-            color="#3BA0FF"
+            color="#3EBAE6"
         )
 
     embed_ping = make_embed(
@@ -378,7 +382,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
             description="Wanna receive pings for specific situations?\nClick the buttons to receive them!\nTo remove them simply click the button again!",
             field_1_title="Avalaible roles:",
             field_1_description="🎶 Release Ping\n📊 Poll Ping\n🕹️ Gaming Ping",
-            color="#6F40E6"
+            color="#8E70F2"
         )
 
     await interaction.channel.send(embed=embed_misc, view=SelfRolesMiscView())
@@ -386,7 +390,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
 
     await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /selfrolessetup command succesfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 
@@ -394,10 +398,9 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
 
 # Slash /say command
 @client.tree.command(name="say", description="Make the bot say something")
-async def slash_say(interaction: discord.Interaction,
-                    message: str):
+async def slash_say(interaction: discord.Interaction, message: str):
     if interaction.user.id != AETHERIUS_ID:
         return
     await interaction.channel.send(message)
     await interaction.response.send_message("Message sent!", ephemeral=True)
-    print(f"Slash /say command succesfully executed by {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")

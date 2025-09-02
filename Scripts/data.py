@@ -25,6 +25,7 @@ guild = client.get_guild(AETHER_MUSIC_ID)
 # Miscellaneous
 ERROR_MESSAGE = "An error occurred while executing the command:"
 NO_PERMISSION_MESSAGE = "You don't have permission to use this command!"
+COMMAND_EXECUTED_MESSAGE = "command successfully executed by"
 TASK_TIMER = 10
 
 # User IDs
