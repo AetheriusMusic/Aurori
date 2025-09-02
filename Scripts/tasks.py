@@ -7,14 +7,26 @@ from utility import *
 
 
 
+# Member role giving
+
+@tasks.loop(seconds=3)
+async def give_member_role(guild):
+    member_role = guild.get_role(MEMBER_ROLE_ID)
+    for member in guild.members:
+        if member_role not in member.roles and not member.bot:
+            await member.add_roles(member_role)
+            print(f"Gave Member role to {member.name}")
+
+
+
 # Avatar update
 user_avatars = {}
 
 @tasks.loop(seconds=TASK_TIMER)
 async def check_avatars(guild, channel):
-    for member in guild.members:  # Iterate through all members in the guild
+    for member in guild.members:
         if member.id in user_avatars:
-            if member.avatar != user_avatars[member.id]:  # Compare stored avatar with current avatar
+            if member.avatar != user_avatars[member.id]:
                 old_avatar_url = user_avatars[member.id].url if user_avatars[member.id] else "No previous avatar"
                 new_avatar_url = member.avatar.url if member.avatar else "No current avatar"
 
@@ -22,7 +34,6 @@ async def check_avatars(guild, channel):
                 print(f"Old avatar: {old_avatar_url}")
                 print(f"New avatar: {new_avatar_url}")
 
-                # Create the embed
                 embed = make_embed(
                                 channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                 title="Avatar Update",
@@ -36,16 +47,13 @@ async def check_avatars(guild, channel):
 
                 embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
 
-                # Add the new avatar as a thumbnail
                 embed.set_thumbnail(url=old_avatar_url)
                 embed.set_image(url=new_avatar_url)
 
                 await channel.send(embed=embed)
 
-                # Update the stored avatar
                 user_avatars[member.id] = member.avatar
         else:
-            # Store the avatar if it's not already stored
             user_avatars[member.id] = member.avatar
 
 
@@ -56,9 +64,9 @@ user_nicknames = {}
 @tasks.loop(seconds=TASK_TIMER)
 async def check_nicknames(guild, channel):
 
-    for member in guild.members:  # Iterate through all members in the guild
+    for member in guild.members:
         if member.id in user_nicknames:
-            if member.nick != user_nicknames[member.id]:  # Compare stored username with current username
+            if member.nick != user_nicknames[member.id]:
                 print(f"{member.name} changed their nickname!")
                 print(f"Old nickname: {user_usernames[member.id]}")
                 print(f"New nickname: {member.nick}")
@@ -76,12 +84,9 @@ async def check_nicknames(guild, channel):
                 embed.set_author(name=member.nick, icon_url=member.avatar.url if member.avatar else None)
 
                 await channel.send(embed=embed)
-                
 
-                # Update the stored nick
                 user_nicknames[member.id] = member.nick
         else:
-            # Store the nick if it's not already stored
             user_nicknames[member.id] = member.nick
 
 
@@ -92,9 +97,9 @@ user_usernames = {}
 @tasks.loop(seconds=TASK_TIMER)
 async def check_usernames(guild, channel):
 
-    for member in guild.members:  # Iterate through all members in the guild
+    for member in guild.members:
         if member.id in user_usernames:
-            if member.name != user_usernames[member.id]:  # Compare stored username with current username
+            if member.name != user_usernames[member.id]:
                 print(f"{member.name} changed their username!")
                 print(f"Old username: {user_usernames[member.id]}")
                 print(f"New username: {member.name}")
@@ -112,10 +117,7 @@ async def check_usernames(guild, channel):
                 embed.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
 
                 await channel.send(embed=embed)
-                
 
-                # Update the stored nick
                 user_usernames[member.id] = member.name
         else:
-            # Store the nick if it's not already stored
             user_usernames[member.id] = member.name

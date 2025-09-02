@@ -39,6 +39,7 @@ async def on_ready():
     print(f"{client.user} has succesfully connected to Aether Music!")
 
     # Logging tasks startup
+    give_member_role.start(aether_music)
     for member in aether_music.members:
         user_avatars[member.id] = member.avatar
         user_nicknames[member.id] = member.nick
@@ -50,11 +51,8 @@ async def on_ready():
     # /Slash commands registration
     await client.tree.sync()
 
-    try:
-        for command in client.tree.get_commands():
-            print(f"Succesfully registered /slash command: /{command.name}")
-    except Exception as error:
-            error_print(f"Failed to register /slash commands: {error}")
+    for command in client.tree.get_commands():
+        print(f"Succesfully registered /slash command: /{command.name}")
 
     # Views reassignment
     client.add_view(CloseTicketView())
