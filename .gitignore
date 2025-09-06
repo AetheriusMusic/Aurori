@@ -174,3 +174,4 @@ cython_debug/
 .pypirc
 sdev_start.sh
 /Ticket Transcripts
+Keys/.webhook_urls

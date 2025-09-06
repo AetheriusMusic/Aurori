@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from discord import Intents
 from discord.ext import commands
 
@@ -5,13 +7,20 @@ from discord.ext import commands
 
 
 
-# Discord intents (permissions for the bot)
+WEBHOOK_URL_PATH = Path(__file__).resolve().parent.parent / "Keys/.webhook_urls"
+
+with open(WEBHOOK_URL_PATH, "r", encoding="utf-8") as webhook_urls_file:
+    webhook_urls = [line.strip() for line in webhook_urls_file]
+
+
+
+# Discord intents
 intents = Intents.default()
-intents.message_content = True  # For reading message content
-intents.guilds = True           # For detecting guilds (servers)
-intents.presences = True        # Enable presence intent
-intents.members = True          # Required for fetching members
-intents.webhooks = True         # Required for sending webhooks
+intents.message_content = True
+intents.guilds = True
+intents.presences = True
+intents.members = True
+intents.webhooks = True
 
 # Bot data
 app_id = 1328115239996358656
@@ -64,5 +73,5 @@ TICKETS_CHANNEL_ID = 1353416469160923276
 OTHER_CATEGORY_ID = 1408475211720036504
 
 # Webhook URLs
-spamping_general_url = "https://discord.com/api/webhooks/1367871548580691999/BDf3vZ4pS2xfG2HccuX8g3zGgobAFpxo6OcBmUNBpqrpch4S-v9o57b26fFKo9R4Pz0z"
-spamping_silksong_url = "https://discord.com/api/webhooks/1346566625591033886/oApOk5EeMufdPcExHaYslNSx6MxCJWhUR_JvS_P-XjCGG1sDc2fLg5-2mzADLLyQSMoZ"
+spamping_bot_commands_url = webhook_urls[0]
+spamping_silksong_url = webhook_urls[1]

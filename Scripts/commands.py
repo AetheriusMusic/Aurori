@@ -48,7 +48,7 @@ async def slash_info(interaction: discord.Interaction):
                 field_2_description="Python, thanks to discord.py"
                 )
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -64,7 +64,7 @@ async def regular_ping(ctx):
 async def slash_ping(interaction: discord.Interaction):
     latency = round(interaction.client.latency * 1000)
     await interaction.response.send_message(f"Pong! 🏓 Latency: **{latency}** ms")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -98,7 +98,7 @@ async def slash_love(interaction: discord.Interaction):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -120,7 +120,7 @@ async def slash_coinflip(interaction: discord.Interaction):
     random_output = ("heads", "tails")
 
     await interaction.response.send_message(f"You got {random.choice(random_output)}!")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -206,7 +206,7 @@ async def slash_shutdown(interaction: discord.Interaction):
         return
 
     await interaction.response.send_message("Shutting down...")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
     await client.close()
     print("Client closed successfully")
 
@@ -221,7 +221,7 @@ async def slash_shutdown(interaction: discord.Interaction):
     user="The user to ping",
     role="The role to ping",
     text="Custom message to include (default: \"Hello :3\")",
-    webhook_index="The channel to send the spamping in (1: General, 0: Silksong)"
+    webhook_index="The channel to send the spamping in (1: Bot Commands, 0: Silksong)"
 )
 async def slash_spamping(
     interaction: discord.Interaction,
@@ -258,7 +258,7 @@ async def slash_spamping(
 
             match webhook_index:
                 case 0: webhook_index = spamping_silksong_url
-                case 1: webhook_index = spamping_general_url
+                case 1: webhook_index = spamping_bot_commands_url
                 case None:
                     await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
                     webhook_index = spamping_silksong_url
@@ -274,7 +274,7 @@ async def slash_spamping(
                     await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
                 await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
-                print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+                print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
         if times < 1:
             await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
@@ -354,7 +354,7 @@ async def slash_embed(interaction: discord.Interaction,
             await channel.send(embed=embed)
             await interaction.response.defer(ephemeral=True)
             await interaction.followup.send("Embed sent succesfully!", ephemeral=True)
-            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
     except Exception as error:
         print(f"An error occurred in the /{interaction.command.name} command: {error}")
@@ -384,7 +384,7 @@ async def slash_ticket_setup(interaction: discord.Interaction):
 
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -421,7 +421,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
 
     await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -434,4 +434,4 @@ async def slash_say(interaction: discord.Interaction, message: str):
         return
     await interaction.channel.send(message)
     await interaction.response.send_message("Message sent!", ephemeral=True)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
