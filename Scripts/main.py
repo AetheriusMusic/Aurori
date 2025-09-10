@@ -12,7 +12,7 @@ from self_roles import *
 
 TOKEN_PATH = Path(__file__).resolve().parent.parent / "Keys/.token"
 
-with open(TOKEN_PATH, "r") as token_file:
+with open(TOKEN_PATH, "r", encoding="utf-8") as token_file:
     TOKEN = token_file.read().strip()
 
 CHAT_RESPONSES_PATH = Path(__file__).resolve().parent.parent / "Data/chat_responses.txt"

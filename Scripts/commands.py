@@ -1,4 +1,5 @@
 import random
+
 import discord
 import aiohttp
 from discord import app_commands
@@ -125,7 +126,7 @@ async def slash_coinflip(interaction: discord.Interaction):
 async def regular_avatar(ctx, user: discord.User = None):
 
     user = user or ctx.author
-    avatar_url = user.avatar.url
+    avatar_url = user.display_avatar.url
 
     embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
@@ -144,13 +145,13 @@ async def slash_avatar(
     ):
 
     user = user or interaction.user
-    avatar_url = user.avatar.url
+    avatar_url = user.display_avatar.url
 
     embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
