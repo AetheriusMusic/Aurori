@@ -1,11 +1,7 @@
 import random
-
 import discord
 import aiohttp
 from discord import app_commands
-
-from colorthief import ColorThief
-from io import BytesIO
 
 from data import *
 from utility import *
@@ -128,25 +124,10 @@ async def slash_coinflip(interaction: discord.Interaction):
 @client.command(name="avatar")
 async def regular_avatar(ctx, user: discord.User = None):
 
-    user = user or interaction.user
-    avatar_url = user.display_avatar.url
+    user = user or ctx.author
+    avatar_url = user.avatar.url
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(avatar_url) as response:
-            if response.status != 200:
-                return await ctx.send_message("Error: couldn't fetch avatar.")
-            data = await response.read()
-
-    avatar_image = BytesIO(data)
-    color_thief = ColorThief(avatar_image)
-    dominant_color = color_thief.get_color(quality=100) # Get dominant color, every 100 pixels
-
-    hex_color = int('%02x%02x%02x' % dominant_color, 16)
-
-    embed = discord.Embed(
-        title=f"{user.name}'s avatar",
-        color=hex_color
-    )
+    embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
 
     await ctx.send(embed=embed)
@@ -157,31 +138,19 @@ async def regular_avatar(ctx, user: discord.User = None):
 # Slash /avatar command
 @client.tree.command(name="avatar", description="Get a user's avatar")
 @app_commands.describe(user="The user to get the avatar of")
-async def slash_avatar(interaction: discord.Interaction, user: discord.User = None):
+async def slash_avatar(
+    interaction: discord.Interaction,
+    user: discord.User = None
+    ):
 
     user = user or interaction.user
-    avatar_url = user.display_avatar.url
+    avatar_url = user.avatar.url
 
-    async with aiohttp.ClientSession() as session:
-        async with session.get(avatar_url) as response:
-            if response.status != 200:
-                return await interaction.response.send_message("Error: couldn't fetch avatar.")
-            data = await response.read()
-
-    avatar_image = BytesIO(data)
-    color_thief = ColorThief(avatar_image)
-    dominant_color = color_thief.get_color(quality=100) # Get dominant color, every 100 pixels
-
-    hex_color = int('%02x%02x%02x' % dominant_color, 16)
-
-    embed = discord.Embed(
-        title=f"{user.name}'s avatar",
-        color=hex_color
-    )
+    embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.author.name}")
 
 
 

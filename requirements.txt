@@ -1,2 +1,1 @@
 discord~=2.3.2
-colorthief~=0.2.1
