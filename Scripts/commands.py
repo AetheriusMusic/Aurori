@@ -128,7 +128,7 @@ async def regular_avatar(ctx, user: discord.User = None):
     user = user or ctx.author
     avatar_url = user.display_avatar.url
 
-    embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
+    embed = make_embed(title=f"{user.name}'s avatar", channel=ctx.channel, color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
 
     await ctx.send(embed=embed)
@@ -147,7 +147,7 @@ async def slash_avatar(
     user = user or interaction.user
     avatar_url = user.display_avatar.url
 
-    embed = make_embed(title=f"{user.name}'s avatar", color=AETHER_COLOR)
+    embed = make_embed(title=f"{user.name}'s avatar", channel=interaction.channel, color=AETHER_COLOR)
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
