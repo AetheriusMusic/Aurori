@@ -7,16 +7,10 @@ from discord.ext import commands
 
 
 
-# Railway
-import os
+WEBHOOK_URL_PATH = Path(__file__).resolve().parent.parent / "Keys/.webhook_urls"
 
-webhook_urls_env = os.getenv("WEBHOOK_URLS", "")
-
-if not webhook_urls_env:
-    raise FileNotFoundError("Environment variable WEBHOOK_URLS not found.")
-
-webhook_urls = [url.strip() for url in webhook_urls_env.replace("\n", ",").split(",") if url.strip()]
-# Railway
+with open(WEBHOOK_URL_PATH, "r", encoding="utf-8") as webhook_urls_file:
+    webhook_urls = [line.strip() for line in webhook_urls_file]
 
 
 

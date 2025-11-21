@@ -8,21 +8,18 @@ from self_roles import *
 
 
 
-# Railway
-import os
 
-token_path_env = os.getenv("TOKEN_PATH", "")
 
-if not token_path_env:
-    raise FileNotFoundError("Environment variable WEBHOOK_URLS not found.")
+TOKEN_PATH = Path(__file__).resolve().parent.parent / "Keys/.token"
 
-TOKEN = os.getenv("TOKEN_PATH")
-# Railway
+with open(TOKEN_PATH, "r", encoding="utf-8") as token_file:
+    TOKEN = token_file.read().strip()
 
 CHAT_RESPONSES_PATH = Path(__file__).resolve().parent.parent / "Data/chat_responses.txt"
 
 with open(CHAT_RESPONSES_PATH, "r", encoding="utf-8") as chat_responses_file:
     chat_responses = [line.strip() for line in chat_responses_file]
+
 
 
 
