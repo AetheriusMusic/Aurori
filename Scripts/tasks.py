@@ -7,18 +7,6 @@ from utility import *
 
 
 
-# Member role giving
-
-@tasks.loop(seconds=3)
-async def give_member_role(guild):
-    member_role = guild.get_role(MEMBER_ROLE_ID)
-    for member in guild.members:
-        if member_role not in member.roles and not member.bot:
-            await member.add_roles(member_role)
-            print(f"Gave Member role to {member.name}")
-
-
-
 # Avatar update
 user_avatars = {}
 

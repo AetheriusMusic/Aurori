@@ -87,7 +87,7 @@ class CloseTicketView(discord.ui.View):
 
         await interaction.channel.delete()
 
-        print(f"Ticket closed by {interaction.user.name} and transcript successfully saved to the database")
+        print(f"Support ticket closed by {interaction.user.name} and transcript successfully saved to the database")
 
 
 
@@ -105,7 +105,7 @@ class SupportTicketView(discord.ui.View):
         member_role = guild.get_role(MEMBER_ROLE_ID)
         staff_role = guild.get_role(STAFF_ROLE_ID)
 
-        existing_channel = discord.utils.get(category.text_channels, name=f"supp-ticket-{user.name.lower()}")
+        existing_channel = discord.utils.get(category.text_channels, name=f"ticket-supp-{user.name.lower()}")
         if existing_channel:
             await interaction.response.send_message(f"⚠️ You already have an open support ticket: {existing_channel.mention}", ephemeral=True)
             return
@@ -117,7 +117,7 @@ class SupportTicketView(discord.ui.View):
         }
 
         support_ticket_channel = await guild.create_text_channel(
-            name=f"supp-ticket-{user.name}",
+            name=f"ticket-supp-{user.name}",
             overwrites=overwrites,
             category=category
         )

@@ -1,4 +1,7 @@
+from pathlib import Path
+
 import random
+import json
 
 import discord
 import aiohttp
@@ -11,9 +14,14 @@ from utility import *
 
 
 
+VERIFICATION_LIST_PATH = Path(__file__).resolve().parent.parent / "Data/verification_list.json"
+
+
+
 # Regular !info command
 @client.command(name="info")
 async def regular_info(ctx):
+
     embed = make_embed(
                 channel=ctx.channel,
                 color=AURORI_COLOR,
@@ -27,11 +35,12 @@ async def regular_info(ctx):
                 field_2_description="Python, thanks to discord.py"
                 )
     await ctx.send(embed=embed)
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, embed sent in{ctx.channel.name}")
 
 # Slash /info command
-@client.tree.command(name="info", description="Check the bot's most important informations")
+@client.tree.command(name="info", description="Check the bot's info")
 async def slash_info(interaction: discord.Interaction):
+
     embed = make_embed(
                 channel=interaction.channel,
                 color=AURORI_COLOR,
@@ -45,23 +54,27 @@ async def slash_info(interaction: discord.Interaction):
                 field_2_description="Python, thanks to discord.py"
                 )
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in{interaction.channel.name}")
 
 
 
 # Regular !ping command
 @client.command(name="ping")
 async def regular_ping(ctx):
+
     latency = round(ctx.bot.latency * 1000)
-    await ctx.send(f"Pong! 🏓 Latency: **{latency}** ms")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
+
+    await ctx.send(f"Pong! <:cat_milk:1353405311326621706>\nLatency: **{latency}** ms")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
 
 # Slash /ping command
 @client.tree.command(name="ping", description="Check the bot's latency")
 async def slash_ping(interaction: discord.Interaction):
+
     latency = round(interaction.client.latency * 1000)
-    await interaction.response.send_message(f"Pong! 🏓 Latency: **{latency}** ms")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+
+    await interaction.response.send_message(f"Pong! <:cat_milk:1353405311326621706>\nLatency: **{latency}** ms")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
 
 
 
@@ -74,12 +87,12 @@ async def regular_love(ctx):
                       "I love you more than words can describe",
                       "I love you more than you can imagine",
                       "I love you more than you will ever know",
-                      "Remember, there's always somebody that loves you")
-
+                      "Remember, there's always somebody that loves you"
+                      )
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
 
 # Slash /love command
 @client.tree.command(name="love", description="Let the bot show you some love")
@@ -90,12 +103,12 @@ async def slash_love(interaction: discord.Interaction):
                       "I love you more than words can describe",
                       "I love you more than you can imagine",
                       "I love you more than you will ever know",
-                      "Remember, there's always somebody that loves you")
-
+                      "Remember, there's always somebody that loves you"
+                      )
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
 
 
 
@@ -106,9 +119,7 @@ async def regular_coinflip(ctx):
     random_output = ("heads", "tails")
 
     await ctx.send(f"You got {random.choice(random_output)}!")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
-
-
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
 
 # Slash /coinflip command
 @client.tree.command(name="coinflip", description="Flip a coin")
@@ -117,7 +128,7 @@ async def slash_coinflip(interaction: discord.Interaction):
     random_output = ("heads", "tails")
 
     await interaction.response.send_message(f"You got {random.choice(random_output)}!")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
 
 
 
@@ -132,17 +143,12 @@ async def regular_avatar(ctx, user: discord.User = None):
     embed.set_image(url=avatar_url)
 
     await ctx.send(embed=embed)
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
-
-
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, {user.name}'s avatar sent in{ctx.channel.name}")
 
 # Slash /avatar command
 @client.tree.command(name="avatar", description="Get a user's avatar")
 @app_commands.describe(user="The user to get the avatar of")
-async def slash_avatar(
-    interaction: discord.Interaction,
-    user: discord.User = None
-    ):
+async def slash_avatar(interaction: discord.Interaction, user: discord.User = None):
 
     user = user or interaction.user
     avatar_url = user.display_avatar.url
@@ -151,7 +157,7 @@ async def slash_avatar(
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name}'s avatar sent in{interaction.channel.name}")
 
 
 
@@ -162,7 +168,7 @@ async def regular_shutdown(ctx):
         await ctx.send(NO_PERMISSION_MESSAGE)
         return
 
-    await ctx.send("Shutting down...")
+    await ctx.send("<:catPonder:1379876581153177771> Shutting down...")
     print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}")
     await client.close()
     print("Client closed successfully")
@@ -175,7 +181,7 @@ async def slash_shutdown(interaction: discord.Interaction):
         await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
 
-    await interaction.response.send_message("Shutting down...")
+    await interaction.response.send_message("<:catPonder:1379876581153177771> Shutting down...")
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
     await client.close()
     print("Client closed successfully")
@@ -192,7 +198,7 @@ async def slash_shutdown(interaction: discord.Interaction):
     role="The role to ping",
     text="Custom message to include (default: \"Hello :3\")",
     webhook_index="The channel to send the spamping in (1: Bot Commands, 0: Silksong)"
-)
+    )
 async def slash_spamping(
     interaction: discord.Interaction,
     times: int,
@@ -211,7 +217,7 @@ async def slash_spamping(
         role_mention = role.mention if role else ""
 
         if user_mention and role_mention:
-            ping_provided = f"{user_mention}" + " and " f"{role_mention}"
+            ping_provided = f"{user_mention} and {role_mention}"
         elif user_mention and not role_mention:
             ping_provided = user_mention
         elif role_mention and not user_mention:
@@ -243,7 +249,7 @@ async def slash_spamping(
                 for _ in range(times):
                     await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-                await interaction.followup.send(f"Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+                await interaction.followup.send(f"✅ Successfully pinged {ping_provided} {times} times!", ephemeral=True)
                 print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
         if times < 1:
@@ -279,7 +285,7 @@ async def slash_spamping(
     field_3_description = "The description of the third field",
     field_3_is_inline = "Whether the third field is inline or not (default: False)",
     footer = "The footer text"
-)
+    )
 async def slash_embed(interaction: discord.Interaction,
                       channel: discord.TextChannel,
                       title: str = "Title",
@@ -323,8 +329,8 @@ async def slash_embed(interaction: discord.Interaction,
 
             await channel.send(embed=embed)
             await interaction.response.defer(ephemeral=True)
-            await interaction.followup.send("Embed sent succesfully!", ephemeral=True)
-            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+            await interaction.followup.send("✅ Embed sent succesfully!", ephemeral=True)
+            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {channel.name}")
 
     except Exception as error:
         print(f"An error occurred in the /{interaction.command.name} command: {error}")
@@ -337,6 +343,7 @@ async def slash_embed(interaction: discord.Interaction,
 # Slash /ticketsetup command
 @client.tree.command(name="ticketsetup", description="Sets up the ticket system for the current channel")
 async def slash_ticket_setup(interaction: discord.Interaction):
+
     from tickets import SupportTicketView
 
     if interaction.user.id != AETHERIUS_ID:
@@ -348,19 +355,43 @@ async def slash_ticket_setup(interaction: discord.Interaction):
             title="Support ticket",
             description="Open a ticket to request support to the server Staff!",
             color=SUPPORT_TICKET_COLOR
-        )
+            )
 
     await interaction.channel.send(embed=embed, view=SupportTicketView())
 
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, ticket system set up in{interaction.channel.name}")
+
+
+
+# Slash /addmember command
+@client.tree.command(name="addmember", description="Add a member to the ticket")
+@app_commands.describe(user="The user to add to the ticket")
+async def slash_add_member(interaction: discord.Interaction, user: discord.Member):
+
+    if not interaction.channel.name.startswith(("ticket-")):
+        await interaction.response.send_message("⚠️ This command can only be used in ticket channels!", ephemeral=True)
+        return
+
+    guild = interaction.guild
+    staff_role = guild.get_role(STAFF_ROLE_ID)
+
+    if staff_role not in interaction.user.roles:
+        await interaction.response.send_message("❌ Only Staff can add members to the ticket!", ephemeral=True)
+        return
+
+    await interaction.channel.set_permissions(user, view_channel=True, send_messages=True, read_message_history=True)
+
+    await interaction.response.send_message(f"✅ {user.mention} has been added to the ticket!", ephemeral=True)
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name} added to {interaction.channel.name}")
 
 
 
 # Slash /selfrolessetup command
 @client.tree.command(name="selfrolessetup", description="Sets up the self roles for the current channel")
 async def slash_self_roles_setup(interaction: discord.Interaction):
+
     from self_roles import SelfRolesMiscView
     from self_roles import SelfRolesPingView
 
@@ -375,7 +406,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
             field_1_title="Avalaible roles:",
             field_1_description="🎵 Musician\n🎨 Artist\n🎮 Gamer\n 💻Coder\n📸 Photographer\n✍️ Writer\n📚 Lore Hunter",            
             color="#3EBAE6"
-        )
+            )
 
     embed_ping = make_embed(
             channel=interaction.channel,
@@ -384,13 +415,12 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
             field_1_title="Avalaible roles:",
             field_1_description="🎶 Release Ping\n📊 Poll Ping\n🕹️ Gaming Ping",
             color="#8E70F2"
-        )
+            )
 
     await interaction.channel.send(embed=embed_misc, view=SelfRolesMiscView())
     await interaction.channel.send(embed=embed_ping, view=SelfRolesPingView())
 
     await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
-
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
@@ -400,8 +430,99 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
 # Slash /say command
 @client.tree.command(name="say", description="Make the bot say something")
 async def slash_say(interaction: discord.Interaction, message: str):
+
     if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
+
     await interaction.channel.send(message)
     await interaction.response.send_message("Message sent!", ephemeral=True)
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+
+
+
+
+
+# Slash /givememberrole command
+@client.tree.command(name="givememberrole", description="Give the Member role to all verified users")
+async def slash_give_member_role(interaction: discord.Interaction):
+
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
+
+    guild = interaction.guild
+    member_role = guild.get_role(MEMBER_ROLE_ID)
+    verification_role = guild.get_role(VERIFICATION_ROLE_ID)
+
+    member_counter = 0
+    for member in guild.members:
+        if member_role not in member.roles and verification_role not in member.roles and not member.bot:
+            await member.add_roles(member_role)
+            print(f"Gave Member role to {member.name}")
+            member_counter += 1
+
+    await interaction.response.send_message(f"Gave {member_role.mention} role to {member_counter} users!", ephemeral=True)
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, gave Member role to {member_counter} users")
+
+
+
+
+
+# Slash /verify command
+@client.tree.command(name="verify", description="Send a user to the verification channel")
+@app_commands.describe(user="The user to verify")
+async def slash_verify(interaction: discord.Interaction, user: discord.Member):
+
+    if interaction.user.id != AETHERIUS_ID:
+        return
+
+    await interaction.response.defer(ephemeral=False)
+
+    guild = interaction.guild
+    bot_member = guild.me
+    verification_role = guild.get_role(VERIFICATION_ROLE_ID)
+    verification_channel = guild.get_channel(VERIFICATION_CHANNEL_ID)
+
+    roles_to_remove = [role for role in user.roles if role != guild.default_role and not role.managed and role < bot_member.top_role]
+
+    with open(VERIFICATION_LIST_PATH, "r", encoding="utf-8") as verification_file:
+        verification_list = json.load(verification_file)
+
+    user_id_string = str(user.id)
+
+    if user_id_string not in verification_list:
+        previous_role_ids = [role.id for role in roles_to_remove]
+
+        if bot_member.top_role > user.top_role and not user.bot:
+            await user.remove_roles(*roles_to_remove)
+            await user.add_roles(verification_role)
+
+            verification_list[user_id_string] = {"Username": user.name, "Display name": user.display_name, "Role IDs": previous_role_ids, "Join date": user.joined_at.strftime("%d/%m/%Y")}
+
+            with open(VERIFICATION_LIST_PATH, "w", encoding="utf-8") as verification_list_file:
+                json.dump(verification_list, verification_list_file, indent=4)
+
+            await interaction.followup.send(f"🔒 {user.mention} has been sent to the {verification_channel.mention} channel!", ephemeral=False)
+            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name} has been sent to the verification channel")
+
+        elif bot_member.top_role <= user.top_role:
+            await interaction.followup.send(f"❌ {user.mention} cannot be sent to the {verification_channel.mention} channel!", ephemeral=True)
+            print(f"Slash /{interaction.command.name} failed to execute by {interaction.user.name}, {user.name} cannot be sent to verification")
+
+        elif user.bot:
+            await interaction.followup.send(f"❌ {user.mention} cannot be sent to the {verification_channel.mention} channel!", ephemeral=True)
+            print(f"Slash /{interaction.command.name} failed to execute by {interaction.user.name}, {user.name} cannot be sent to verification")
+
+    else:
+        saved_role_ids = verification_list.pop(user_id_string)["Role IDs"]
+        roles_to_restore = [guild.get_role(rid) for rid in saved_role_ids if guild.get_role(rid)]
+        if roles_to_restore:
+            await user.add_roles(*roles_to_restore)
+        await user.remove_roles(verification_role)
+
+        with open(VERIFICATION_LIST_PATH, "w", encoding="utf-8") as verification_list_file:
+            json.dump(verification_list, verification_list_file, indent=4)
+
+        await interaction.followup.send(f"🔓 {user.mention} has been given back their roles!", ephemeral=False)
+        print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name} has been given back their roles")

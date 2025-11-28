@@ -39,7 +39,6 @@ async def on_ready():
     print(f"{client.user} has succesfully connected to Aether Music!")
 
     # Logging tasks startup
-    give_member_role.start(aether_music)
     for member in aether_music.members:
         user_avatars[member.id] = member.avatar
         user_nicknames[member.id] = member.nick
@@ -60,7 +59,7 @@ async def on_ready():
     client.add_view(SelfRolesMiscView())
     client.add_view(SelfRolesPingView())
 
-    await testing_channel.send("I'm online and ready! <:scug_silly:1406051577365794816>")
+    await testing_channel.send("I'm online and ready! <:scugSilly:1406051577365794816>")
 
 
 
@@ -79,7 +78,7 @@ async def on_message(message):
     if message.author.id == DISBOARD_ID and message.embeds:
         embed = message.embeds[0]
         if embed.description and "Bump done" in embed.description:
-            await message.channel.send("Thank you for bumping the server! <:scug_silly:1406051577365794816>")
+            await message.channel.send("Thank you for bumping the server! <:scugSilly:1406051577365794816>")
 
 
 
