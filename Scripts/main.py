@@ -21,6 +21,7 @@ CHAT_RESPONSES_PATH = Path(__file__).resolve().parent.parent / "Data/chat_respon
 with open(CHAT_RESPONSES_PATH, "r", encoding="utf-8") as chat_responses_file:
     chat_responses = [line.strip() for line in chat_responses_file]
 
+BUMP_LEADERBOARD_PATH = Path(__file__).resolve().parent.parent / "Data/bump_leaderboard.json"
 
 
 

@@ -54,7 +54,7 @@ async def slash_info(interaction: discord.Interaction):
                 field_2_description="Python, thanks to discord.py"
                 )
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {interaction.channel.name}")
 
 
 
@@ -74,7 +74,7 @@ async def slash_ping(interaction: discord.Interaction):
     latency = round(interaction.client.latency * 1000)
 
     await interaction.response.send_message(f"Pong! <:cat_milk:1353405311326621706>\nLatency: **{latency}** ms")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
 
 
 
@@ -108,7 +108,7 @@ async def slash_love(interaction: discord.Interaction):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await interaction.response.send_message(f"{random.choice(random_message)}, {interaction.user.mention}! {random.choice(random_emoji)}")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
 
 
 
@@ -128,7 +128,7 @@ async def slash_coinflip(interaction: discord.Interaction):
     random_output = ("heads", "tails")
 
     await interaction.response.send_message(f"You got {random.choice(random_output)}!")
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
 
 
 
@@ -157,7 +157,7 @@ async def slash_avatar(interaction: discord.Interaction, user: discord.User = No
     embed.set_image(url=avatar_url)
 
     await interaction.response.send_message(embed=embed)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name}'s avatar sent in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name}'s avatar sent in {interaction.channel.name}")
 
 
 
@@ -361,7 +361,7 @@ async def slash_ticket_setup(interaction: discord.Interaction):
 
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, ticket system set up in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, ticket system set up in {interaction.channel.name}")
 
 
 
@@ -421,7 +421,7 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_ping, view=SelfRolesPingView())
 
     await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
 
 
 
@@ -447,7 +447,7 @@ async def slash_staff_application_setup(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_staff, view=StaffApplicationFormView())
 
     await interaction.response.send_message("✅ Staff application form set up in the current channel!", ephemeral=True)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
 
 
 
