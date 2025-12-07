@@ -5,6 +5,7 @@ from commands import *
 from tasks import *
 from tickets import *
 from self_roles import *
+from staff_application import *
 
 
 
@@ -58,6 +59,7 @@ async def on_ready():
     client.add_view(SupportTicketView())
     client.add_view(SelfRolesMiscView())
     client.add_view(SelfRolesPingView())
+    client.add_view(StaffApplicationFormView())
 
     await testing_channel.send("I'm online and ready! <:scugSilly:1406051577365794816>")
 

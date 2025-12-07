@@ -421,7 +421,33 @@ async def slash_self_roles_setup(interaction: discord.Interaction):
     await interaction.channel.send(embed=embed_ping, view=SelfRolesPingView())
 
     await interaction.response.send_message("✅ Self roles buttons set up in the current channel!", ephemeral=True)
-    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
+
+
+
+
+
+# Slash /staffapplicationsetup command
+@client.tree.command(name="staffapplicationsetup", description="Sets up the Staff application form for the current channel")
+async def slash_staff_application_setup(interaction: discord.Interaction):
+
+    from staff_application import StaffApplicationFormView
+
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
+
+    embed_staff = make_embed(
+            channel=interaction.channel,
+            title="Staff Application Form",
+            description="Click the button to open the from and apply to become part of the Staff!",          
+            color=AURORI_COLOR
+            )
+
+    await interaction.channel.send(embed=embed_staff, view=StaffApplicationFormView())
+
+    await interaction.response.send_message("✅ Staff application form set up in the current channel!", ephemeral=True)
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in{interaction.channel.name}")
 
 
 
@@ -436,7 +462,7 @@ async def slash_say(interaction: discord.Interaction, message: str):
         return
 
     await interaction.channel.send(message)
-    await interaction.response.send_message("Message sent!", ephemeral=True)
+    await interaction.response.send_message("✅ Message sent!", ephemeral=True)
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
@@ -474,7 +500,9 @@ async def slash_give_member_role(interaction: discord.Interaction):
 @app_commands.describe(user="The user to verify")
 async def slash_verify(interaction: discord.Interaction, user: discord.Member):
 
-    if interaction.user.id != AETHERIUS_ID:
+    staff_role = interaction.guild.get_role(STAFF_ROLE_ID)
+    if staff_role not in interaction.user.roles:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
 
     await interaction.response.defer(ephemeral=False)
