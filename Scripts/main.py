@@ -61,6 +61,7 @@ async def on_ready():
     client.add_view(SelfRolesMiscView())
     client.add_view(SelfRolesPingView())
     client.add_view(StaffApplicationFormView())
+    client.add_view(StaffApplicationsReviewView())
 
     await testing_channel.send("I'm online and ready! <:scugSilly:1406051577365794816>")
 

@@ -22,11 +22,11 @@ VERIFICATION_LIST_PATH = Path(__file__).resolve().parent.parent / "Data/verifica
 @client.command(name="info")
 async def regular_info(ctx):
 
-    embed = make_embed(
+    embed_aurori_info = make_embed(
                 channel=ctx.channel,
                 color=AURORI_COLOR,
                 title="Aurori",
-                description="I am Aurori, a fun bot developed for many purposes, varying from silly commands to moderation ones! <:scug_silly:1406051577365794816>",
+                description="I am Aurori, a fun bot developed for many purposes, varying from silly commands to moderation ones! <:scugSilly:1406051577365794816>",
                 field_1_title="Bot Developer:",
                 field_1_is_inline=True,
                 field_1_description="Aetherius",
@@ -34,14 +34,14 @@ async def regular_info(ctx):
                 field_2_is_inline=True,
                 field_2_description="Python, thanks to discord.py"
                 )
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed_aurori_info)
     print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, embed sent in{ctx.channel.name}")
 
 # Slash /info command
 @client.tree.command(name="info", description="Check the bot's info")
 async def slash_info(interaction: discord.Interaction):
 
-    embed = make_embed(
+    embed_aurori_info = make_embed(
                 channel=interaction.channel,
                 color=AURORI_COLOR,
                 title="Aurori",
@@ -53,7 +53,7 @@ async def slash_info(interaction: discord.Interaction):
                 field_2_is_inline=True,
                 field_2_description="Python, thanks to discord.py"
                 )
-    await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed_aurori_info)
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {interaction.channel.name}")
 
 
@@ -290,7 +290,7 @@ async def slash_embed(interaction: discord.Interaction,
                       channel: discord.TextChannel,
                       title: str = "Title",
                       description: str = "Description",
-                      color: str = "#9954DD",
+                      color: str = AURORI_COLOR,
                       field_1_title: str = None,
                       field_1_description: str = None,
                       field_1_is_inline: bool = False,
@@ -329,7 +329,7 @@ async def slash_embed(interaction: discord.Interaction,
 
             await channel.send(embed=embed)
             await interaction.response.defer(ephemeral=True)
-            await interaction.followup.send("✅ Embed sent succesfully!", ephemeral=True)
+            await interaction.followup.send(f"✅ Embed sent succesfully in {channel.mention}!", ephemeral=True)
             print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {channel.name}")
 
     except Exception as error:
@@ -526,7 +526,11 @@ async def slash_verify(interaction: discord.Interaction, user: discord.Member):
             await user.remove_roles(*roles_to_remove)
             await user.add_roles(verification_role)
 
-            verification_list[user_id_string] = {"Username": user.name, "Display name": user.display_name, "Role IDs": previous_role_ids, "Join date": user.joined_at.strftime("%d/%m/%Y")}
+            verification_list[user_id_string] = {"Username": user.name,
+                                                 "Display name": user.display_name,
+                                                 "Role IDs": previous_role_ids,
+                                                 "Join date": user.joined_at.strftime("%d/%m/%Y")
+                                                 }
 
             with open(VERIFICATION_LIST_PATH, "w", encoding="utf-8") as verification_list_file:
                 json.dump(verification_list, verification_list_file, indent=4)
