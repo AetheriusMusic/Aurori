@@ -16,6 +16,10 @@ from utility import *
 
 VERIFICATION_LIST_PATH = Path(__file__).resolve().parent.parent / "Data/verification_list.json"
 
+BUMP_LEADERBOARD_PATH = Path(__file__).resolve().parent.parent / "Data/bump_leaderboard.json"
+
+
+
 
 
 # Regular !info command
@@ -35,7 +39,7 @@ async def regular_info(ctx):
                 field_2_description="Python, thanks to discord.py"
                 )
     await ctx.send(embed=embed_aurori_info)
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, embed sent in{ctx.channel.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, embed sent in {ctx.channel.name}")
 
 # Slash /info command
 @client.tree.command(name="info", description="Check the bot's info")
@@ -65,7 +69,7 @@ async def regular_ping(ctx):
     latency = round(ctx.bot.latency * 1000)
 
     await ctx.send(f"Pong! <:cat_milk:1353405311326621706>\nLatency: **{latency}** ms")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in {ctx.channel.name}")
 
 # Slash /ping command
 @client.tree.command(name="ping", description="Check the bot's latency")
@@ -92,7 +96,7 @@ async def regular_love(ctx):
     random_emoji = ("❤️", "💖", "💕", "💞", "💗", "💓", "💝", "💘", "💟", "💜", "💛", "💚", "💙", "🧡", "❣️")
 
     await ctx.send(f"{random.choice(random_message)}, {ctx.author.mention}! {random.choice(random_emoji)}")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in {ctx.channel.name}")
 
 # Slash /love command
 @client.tree.command(name="love", description="Let the bot show you some love")
@@ -119,7 +123,7 @@ async def regular_coinflip(ctx):
     random_output = ("heads", "tails")
 
     await ctx.send(f"You got {random.choice(random_output)}!")
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in{ctx.channel.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in {ctx.channel.name}")
 
 # Slash /coinflip command
 @client.tree.command(name="coinflip", description="Flip a coin")
@@ -143,7 +147,7 @@ async def regular_avatar(ctx, user: discord.User = None):
     embed.set_image(url=avatar_url)
 
     await ctx.send(embed=embed)
-    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, {user.name}'s avatar sent in{ctx.channel.name}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, {user.name}'s avatar sent in {ctx.channel.name}")
 
 # Slash /avatar command
 @client.tree.command(name="avatar", description="Get a user's avatar")
@@ -558,3 +562,79 @@ async def slash_verify(interaction: discord.Interaction, user: discord.Member):
 
         await interaction.followup.send(f"🔓 {user.mention} has been given back their roles!", ephemeral=False)
         print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name} has been given back their roles")
+
+
+
+
+
+# Regular !bumpleaderboard command
+@client.command(name="bumpleaderboard", aliases=["bumplb"])
+async def regular_bumpleaderboard(ctx):
+
+    with open(BUMP_LEADERBOARD_PATH, "r", encoding="utf-8") as bump_leaderboard_file:
+        bump_leaderboard = json.load(bump_leaderboard_file)
+
+    users = []
+    for user_id, info in bump_leaderboard.items():
+        users.append({"display_name": info.get("Display name", "Unknown"), "count": info.get("Bump count", 0)})
+
+    users.sort(key=lambda user: user["count"], reverse=True)
+    top10 = users[:10]
+
+    description_lines = []
+    for index, user in enumerate(top10, start=1):
+        medals = ["🥇", "🥈", "🥉"]
+        position = medals[index-1] if index <= len(medals) else f"{index})"
+        description_lines.append(
+            f"{position} - <@{user_id}>: **{user["count"]}** bumps"
+            )
+
+    description = "\n".join(description_lines) if description_lines else "No data <:catPonder:1379876581153177771>"
+
+    embed_bump_leaderboard = make_embed(
+                channel=ctx.channel,
+                color=AURORI_COLOR,
+                title="Bump Leaderboard",
+                description=description
+                )
+
+    await ctx.send(embed=embed_bump_leaderboard)
+
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in {ctx.channel.name}")
+
+
+
+# Slash /bumpleaderboard command
+@client.tree.command(name="bumpleaderboard", description="Show the Bump Leaderboard")
+async def slash_bumpleaderboard(interaction: discord.Interaction):
+
+    with open(BUMP_LEADERBOARD_PATH, "r", encoding="utf-8") as bump_leaderboard_file:
+        bump_leaderboard = json.load(bump_leaderboard_file)
+
+    users = []
+    for user_id, info in bump_leaderboard.items():
+        users.append({"display_name": info.get("Display name", "Unknown"), "count": info.get("Bump count", 0)})
+
+    users.sort(key=lambda user: user["count"], reverse=True)
+    top10 = users[:10]
+
+    description_lines = []
+    for index, user in enumerate(top10, start=1):
+        medals = ["🥇", "🥈", "🥉"]
+        position = medals[index-1] if index <= len(medals) else f"{index})"
+        description_lines.append(
+            f"{position} - <@{user_id}>: **{user["count"]}** bumps"
+            )
+
+    description = "\n".join(description_lines) if description_lines else "No data <:catPonder:1379876581153177771>"
+
+    embed_bump_leaderboard = make_embed(
+                channel=interaction.channel,
+                color=AURORI_COLOR,
+                title="Bump Leaderboard",
+                description=description
+                )
+
+    await interaction.response.send_message(embed=embed_bump_leaderboard)
+
+    print(f"Regular !{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")

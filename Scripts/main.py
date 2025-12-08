@@ -23,6 +23,9 @@ with open(CHAT_RESPONSES_PATH, "r", encoding="utf-8") as chat_responses_file:
 
 BUMP_LEADERBOARD_PATH = Path(__file__).resolve().parent.parent / "Data/bump_leaderboard.json"
 
+with open(BUMP_LEADERBOARD_PATH, "r", encoding="utf-8") as bump_leaderboard_file:
+    bump_leaderboard = json.load(bump_leaderboard_file)
+
 
 
 
@@ -48,6 +51,7 @@ async def on_ready():
     check_avatars.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_nicknames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_usernames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
+    bump_leader_role_giving.start(aether_music)
 
     # /Slash commands registration
     await client.tree.sync()
@@ -78,16 +82,49 @@ async def on_message(message):
     if "[Check this out!](https://youtu.be/xvFZjo5PgG0)" in message.content and message.author.id == AURORI_ID:
         await message.edit(suppress=True)
 
-    # Bump thanking
+
+
+    # Bump reminder and leaderboard update
     if message.author.id == DISBOARD_ID and message.embeds:
         embed = message.embeds[0]
         if embed.description and "Bump done" in embed.description:
-            await message.channel.send("Thank you for bumping the server! <:scugSilly:1406051577365794816>")
+
+            if message.interaction_metadata and message.interaction_metadata.user:
+                user = message.interaction_metadata.user
+                user_id_string = str(user.id)
+
+                if user_id_string in bump_leaderboard:
+                    bump_leaderboard[user_id_string]["Username"] = user.name
+                    bump_leaderboard[user_id_string]["Display name"] = user.display_name
+                    bump_leaderboard[user_id_string]["Bump count"] = bump_leaderboard[user_id_string].get("Bump count", 0) + 1
+                    bump_leaderboard[user_id_string]["Last bump"] = str(datetime.now().strftime("%d-%m-%Y, %H:%M"))
+
+                else:
+                    bump_leaderboard[user_id_string] = {"Username" : user.name,
+                                                        "Display name" : user.display_name,
+                                                        "Bump count" : 1,
+                                                        "Last bump" : str(datetime.now().strftime("%d-%m-%Y %H:%M"))
+                                                        }
+
+                with open(BUMP_LEADERBOARD_PATH, "w", encoding="utf-8") as f:
+                    json.dump(bump_leaderboard, f, indent=4)
+
+                    await message.channel.send("Thank you for bumping the server! <:scugSilly:1406051577365794816>")
+                    asyncio.create_task(bump_warning(channel=message.channel, user=message.interaction_metadata.user))
+
+                with open(BUMP_LEADERBOARD_PATH, "w", encoding="utf-8") as bump_leaderboard_file:
+                    json.dump(bump_leaderboard, bump_leaderboard_file, indent=4)
 
 
 
     # Commands processing permission
     await client.process_commands(message)
+
+
+
+async def bump_warning(channel, user):
+    await asyncio.sleep(7200)
+    await channel.send(f"Hey {user.mention}, it's time to bump again!")
 
 
 

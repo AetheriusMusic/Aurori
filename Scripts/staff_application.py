@@ -75,7 +75,7 @@ class StaffApplicationFormModal(discord.ui.Modal, title="Staff Application Form"
 
         embed_application = make_embed(
                     channel=staff_forms_channel,
-                    title=f"New Staff Application by **{author.name}**",
+                    title=f"New Staff Application by **{author.mention}**",
                     field_1_title="Provided Username",
                     field_1_description=self.name.value,
                     field_1_is_inline=False,

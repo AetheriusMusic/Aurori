@@ -1,9 +1,15 @@
+import json
+
 from discord.ext import tasks
 
 from data import *
 from utility import *
 
 
+
+
+
+BUMP_LEADERBOARD_PATH = Path(__file__).resolve().parent.parent / "Data/bump_leaderboard.json"
 
 
 
@@ -37,7 +43,7 @@ async def check_avatars(guild, channel):
                 embed_avatar.set_thumbnail(url=old_avatar_url)
                 embed_avatar.set_image(url=new_avatar_url)
 
-                await channel.send(embed_avatar)
+                await channel.send(embed=embed_avatar)
 
                 user_avatars[member.id] = member.avatar
         else:
@@ -93,7 +99,7 @@ async def check_nicknames(guild, channel):
                     )
                     embed_nick.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
 
-                await channel.send(embed_nick)
+                await channel.send(embed=embed_nick)
 
                 user_nicknames[member.id] = member.nick
         else:
@@ -149,8 +155,36 @@ async def check_usernames(guild, channel):
                     )
                     embed_username.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
 
-                await channel.send(embed_username)
+                await channel.send(embed=embed_username)
 
                 user_usernames[member.id] = member.name
         else:
             user_usernames[member.id] = member.name
+
+
+
+
+
+# Bump Leader role giving
+top_bumpers = {}
+
+@tasks.loop(seconds=TASK_TIMER)
+async def bump_leader_role_giving(guild):
+
+    with open(BUMP_LEADERBOARD_PATH, "r", encoding="utf-8") as bump_leaderboard_file:
+        bump_leaderboard = json.load(bump_leaderboard_file)
+
+    bump_leader_role = guild.get_role(BUMP_LEADER_ROLE_ID)
+
+    top_user_id = max(bump_leaderboard.items(), key=lambda item: item[1].get("Bump count", 0))[0]
+
+    top_member = guild.get_member(int(top_user_id))
+
+    for user in bump_leader_role.members:
+        if user != top_member:
+            await user.remove_roles(bump_leader_role)
+            print(f"Removed Bump Leader role from {user.name}")
+
+    if bump_leader_role not in top_member.roles:
+        await top_member.add_roles(bump_leader_role, reason="Top bumper of the server")
+        print(f"Assigned Bumper Leader role to {top_member.name} with {bump_leaderboard[top_user_id].get('Bump count', 0)} bumps")
