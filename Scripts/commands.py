@@ -576,18 +576,22 @@ async def regular_bumpleaderboard(ctx):
 
     users = []
     for user_id, info in bump_leaderboard.items():
-        users.append({"display_name": info.get("Display name", "Unknown"), "count": info.get("Bump count", 0)})
+        users.append({
+            "user_id": user_id,
+            "display_name": info.get("Display name", "Unknown"),
+            "count": info.get("Bump count", 0)
+        })
 
-    users.sort(key=lambda user: user["count"], reverse=True)
+    users.sort(key=lambda u: u["count"], reverse=True)
     top10 = users[:10]
 
     description_lines = []
-    for index, user in enumerate(top10, start=1):
+    for index, entry in enumerate(top10, start=1):
         medals = ["🥇", "🥈", "🥉"]
         position = medals[index-1] if index <= len(medals) else f"{index})"
-        description_lines.append(
-            f"{position} - <@{user_id}>: **{user["count"]}** bumps"
-            )
+        user_id = entry["user_id"]
+        count = entry["count"]
+        description_lines.append(f"{position} - <@{user_id}>: **{count}** bumps")
 
     description = "\n".join(description_lines) if description_lines else "No data <:catPonder:1379876581153177771>"
 
@@ -613,18 +617,22 @@ async def slash_bumpleaderboard(interaction: discord.Interaction):
 
     users = []
     for user_id, info in bump_leaderboard.items():
-        users.append({"display_name": info.get("Display name", "Unknown"), "count": info.get("Bump count", 0)})
+        users.append({
+            "user_id": user_id,
+            "display_name": info.get("Display name", "Unknown"),
+            "count": info.get("Bump count", 0)
+        })
 
-    users.sort(key=lambda user: user["count"], reverse=True)
+    users.sort(key=lambda u: u["count"], reverse=True)
     top10 = users[:10]
 
     description_lines = []
-    for index, user in enumerate(top10, start=1):
+    for index, entry in enumerate(top10, start=1):
         medals = ["🥇", "🥈", "🥉"]
         position = medals[index-1] if index <= len(medals) else f"{index})"
-        description_lines.append(
-            f"{position} - <@{user_id}>: **{user["count"]}** bumps"
-            )
+        user_id = entry["user_id"]
+        count = entry["count"]
+        description_lines.append(f"{position} - <@{user_id}>: **{count}** bumps")
 
     description = "\n".join(description_lines) if description_lines else "No data <:catPonder:1379876581153177771>"
 

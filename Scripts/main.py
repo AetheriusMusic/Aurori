@@ -51,7 +51,6 @@ async def on_ready():
     check_avatars.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_nicknames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_usernames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
-    bump_leader_role_giving.start(aether_music)
 
     # /Slash commands registration
     await client.tree.sync()
@@ -106,14 +105,28 @@ async def on_message(message):
                                                         "Last bump" : str(datetime.now().strftime("%d-%m-%Y %H:%M"))
                                                         }
 
-                with open(BUMP_LEADERBOARD_PATH, "w", encoding="utf-8") as f:
-                    json.dump(bump_leaderboard, f, indent=4)
-
-                    await message.channel.send("Thank you for bumping the server! <:scugSilly:1406051577365794816>")
-                    asyncio.create_task(bump_warning(channel=message.channel, user=message.interaction_metadata.user))
-
                 with open(BUMP_LEADERBOARD_PATH, "w", encoding="utf-8") as bump_leaderboard_file:
                     json.dump(bump_leaderboard, bump_leaderboard_file, indent=4)
+
+                await message.channel.send("Thank you for bumping the server! <:scugSilly:1406051577365794816>")
+                asyncio.create_task(bump_warning(channel=message.channel, user=message.interaction_metadata.user))
+
+                bump_leader_role = aether_music.get_role(BUMP_LEADER_ROLE_ID)
+
+                top_user_id = max(bump_leaderboard.items(), key=lambda item: item[1].get("Bump count", 0))[0]
+
+                top_member = aether_music.get_member(int(top_user_id))
+
+                for user in bump_leader_role.members:
+                    if user != top_member:
+                        await user.remove_roles(bump_leader_role)
+                        print(f"Removed Bump Leader role from {user.name}")
+
+                if bump_leader_role not in top_member.roles:
+                    await top_member.add_roles(bump_leader_role, reason="Top bumper of the server")
+                    print(f"Assigned Bumper Leader role to {top_member.name} with {bump_leaderboard[top_user_id].get('Bump count', 0)} bumps")
+
+
 
 
 
@@ -124,7 +137,7 @@ async def on_message(message):
 
 async def bump_warning(channel, user):
     await asyncio.sleep(7200)
-    await channel.send(f"Hey {user.mention}, it's time to bump again!")
+    await channel.send(f"Hey {user.mention}, it's time to bump again! <:scugAmazed:1406042797529890908>")
 
 
 
