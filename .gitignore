@@ -172,6 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-sdev_start.sh
+
+# Discord server private files
 /Ticket Transcripts
-Keys/.webhook_urls
+.webhook_urls

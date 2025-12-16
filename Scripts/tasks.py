@@ -138,30 +138,6 @@ async def check_usernames(guild, channel):
                     embed_username.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
                     embed_username.set_footer(text=f"User ID: {member.id}")
 
-                elif member.name and not user_usernames[member.id]:
-                    embed_username = make_embed(
-                                    channel=client.get_channel(USER_LOGS_CHANNEL_ID),
-                                    title="username Set",
-                                    description=f"{member.mention} set their **username**!",
-                                    color=USER_LOGS_COLOR,
-                                    field_1_title="New username",
-                                    field_1_description=member.name
-                    )
-                    embed_username.set_author(name=member.nick, icon_url=member.avatar.url if member.avatar else None)
-                    embed_username.set_footer(text=f"User ID: {member.id}")
-
-                elif not member.name and user_usernames[member.id]:
-                    embed_username = make_embed(
-                                    channel=client.get_channel(USER_LOGS_CHANNEL_ID),
-                                    title="username Removed",
-                                    description=f"{member.mention} removed their **username**!",
-                                    color=USER_LOGS_COLOR,
-                                    field_1_title="Old username",
-                                    field_1_description=user_usernames[member.id]
-                    )
-                    embed_username.set_author(name=member.name, icon_url=member.avatar.url if member.avatar else None)
-                    embed_username.set_footer(text=f"User ID: {member.id}")
-
                 await channel.send(embed=embed_username)
 
                 user_usernames[member.id] = member.name

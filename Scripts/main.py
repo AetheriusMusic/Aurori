@@ -1,3 +1,4 @@
+from datetime import timedelta, timezone
 from pathlib import Path
 
 from data import *
@@ -123,7 +124,7 @@ async def on_message(message):
                         print(f"Removed Bump Leader role from {user.name}")
 
                 if bump_leader_role not in top_member.roles:
-                    await top_member.add_roles(bump_leader_role, reason="Top bumper of the server")
+                    await top_member.add_roles(bump_leader_role)
                     print(f"Assigned Bumper Leader role to {top_member.name} with {bump_leaderboard[top_user_id].get('Bump count', 0)} bumps")
 
 
@@ -132,6 +133,23 @@ async def on_message(message):
 
     # Commands processing permission
     await client.process_commands(message)
+
+
+
+
+
+@client.event
+async def on_member_join(member):
+    account_age = datetime.now(timezone.utc) - member.created_at
+
+    if account_age < timedelta(days=30):
+        print(f"Didn't assing Member role to the new user {member.name}, account too young")
+        return
+
+    member_role = aether_music.get_role(MEMBER_ROLE_ID)
+
+    await member.add_roles(member_role)
+    print(f"Assigned Member role to the new user {member.name}")
 
 
 
