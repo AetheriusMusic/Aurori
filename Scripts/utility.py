@@ -14,7 +14,7 @@ def error_print(text):
 
 
 
-def make_embed(channel,
+def make_embed(channel = None,
                 title: str = "Title",
                 description: str = None,
                 color: str = AURORI_COLOR,

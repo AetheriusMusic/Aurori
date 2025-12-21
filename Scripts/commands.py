@@ -143,10 +143,10 @@ async def regular_avatar(ctx, user: discord.User = None):
     user = user or ctx.author
     avatar_url = user.display_avatar.url
 
-    embed = make_embed(title=f"{user.name}'s avatar", channel=ctx.channel, color=AETHER_COLOR)
-    embed.set_image(url=avatar_url)
+    embed_avatar = make_embed(title=f"{user.name}'s avatar", channel=ctx.channel, color=AETHER_COLOR)
+    embed_avatar.set_image(url=avatar_url)
 
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed_avatar)
     print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name}, {user.name}'s avatar sent in {ctx.channel.name}")
 
 # Slash /avatar command
@@ -157,10 +157,10 @@ async def slash_avatar(interaction: discord.Interaction, user: discord.User = No
     user = user or interaction.user
     avatar_url = user.display_avatar.url
 
-    embed = make_embed(title=f"{user.name}'s avatar", channel=interaction.channel, color=AETHER_COLOR)
-    embed.set_image(url=avatar_url)
+    embed_avatar = make_embed(title=f"{user.name}'s avatar", channel=interaction.channel, color=AETHER_COLOR)
+    embed_avatar.set_image(url=avatar_url)
 
-    await interaction.response.send_message(embed=embed)
+    await interaction.response.send_message(embed=embed_avatar)
     print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, {user.name}'s avatar sent in {interaction.channel.name}")
 
 
@@ -203,70 +203,64 @@ async def slash_shutdown(interaction: discord.Interaction):
     text="Custom message to include (default: \"Hello :3\")",
     webhook_index="The channel to send the spamping in (1: Bot Commands, 0: Silksong)"
     )
-async def slash_spamping(
-    interaction: discord.Interaction,
-    times: int,
-    user: discord.User = None,
-    role: discord.Role = None,
-    text: str = "Hello :3",
-    webhook_index: int = None
-    ):
-    try:
+async def slash_spamping(interaction: discord.Interaction,
+                         times: int,
+                         user: discord.User = None,
+                         role: discord.Role = None,
+                         text: str = "Hello :3",
+                         webhook_index: int = None
+                         ):
 
-        if interaction.user.id != AETHERIUS_ID:
-            await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
-            return
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
 
-        user_mention = user.mention if user else ""
-        role_mention = role.mention if role else ""
+    if times < 1:
+        await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
+    if not ping_provided:
+        await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
+    if times > 100:
+        times = 100
+        await interaction.followup.send("You can't spam ping more than 100 times! (Limit set to 100)", ephemeral=True)
 
-        if user_mention and role_mention:
-            ping_provided = f"{user_mention} and {role_mention}"
-        elif user_mention and not role_mention:
-            ping_provided = user_mention
-        elif role_mention and not user_mention:
-            ping_provided = role_mention
-        else:
-            ping_provided = False
+    user_mention = user.mention if user else ""
+    role_mention = role.mention if role else ""
 
-        message = f"{ping_provided} {text}"
+    if user_mention and role_mention:
+        ping_provided = f"{user_mention} and {role_mention}"
+    elif user_mention and not role_mention:
+        ping_provided = user_mention
+    elif role_mention and not user_mention:
+        ping_provided = role_mention
+    else:
+        ping_provided = False
 
-        await interaction.response.defer(ephemeral=True)
+    message = f"{ping_provided} {text}"
 
-        if times > 1 and ping_provided:
+    await interaction.response.defer(ephemeral=True)
+
+    if times > 1 and ping_provided:
 
 
-            match webhook_index:
-                case 0: webhook_index = spamping_silksong_url
-                case 1: webhook_index = spamping_bot_commands_url
-                case None:
-                    await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
-                    webhook_index = spamping_silksong_url
-                case _:
-                    await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
-                    webhook_index = spamping_silksong_url
+        match webhook_index:
+            case 0: webhook_index = spamping_silksong_url
+            case 1: webhook_index = spamping_bot_commands_url
+            case None:
+                await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
+                webhook_index = spamping_silksong_url
+            case _:
+                await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
+                webhook_index = spamping_silksong_url
 
-            # Spamping using a webhook
-            async with aiohttp.ClientSession() as session:
-                spamping_webhook = discord.Webhook.from_url(webhook_index, session=session)
+        # Spamping using a webhook
+        async with aiohttp.ClientSession() as session:
+            spamping_webhook = discord.Webhook.from_url(webhook_index, session=session)
                 
-                for _ in range(times):
-                    await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
+            for _ in range(times):
+                await spamping_webhook.send(message, username="Deleterius & Co. Spamping™", avatar_url=None)
 
-                await interaction.followup.send(f"✅ Successfully pinged {ping_provided} {times} times!", ephemeral=True)
-                print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
-
-        if times < 1:
-            await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
-        if not ping_provided:
-            await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
-        if times > 100:
-            times = 100
-            await interaction.followup.send("You can't spam ping more than 100 times! (Limit set to 100)", ephemeral=True)
-
-    except Exception as error:
-        print(f"An error occurred in the /{interaction.command.name} command: {error}")
-        await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
+            await interaction.followup.send(f"✅ Successfully pinged {ping_provided} {times} times!", ephemeral=True)
+            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}")
 
 
 
@@ -306,39 +300,34 @@ async def slash_embed(interaction: discord.Interaction,
                       field_3_is_inline: bool = False,
                       footer: str = None
                       ):
-    try:
 
-        if interaction.user.id != AETHERIUS_ID:
-            await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
-            return
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
 
-        elif interaction.user.id == AETHERIUS_ID:
+    elif interaction.user.id == AETHERIUS_ID:
 
-            embed = make_embed(
-                            channel,
-                            title,
-                            description,
-                            color,
-                            field_1_title,
-                            field_1_description,
-                            field_1_is_inline,
-                            field_2_title,
-                            field_2_description,
-                            field_2_is_inline,
-                            field_3_title,
-                            field_3_description,
-                            field_3_is_inline,
-                            footer
-                            )
+        embed = make_embed(
+                        channel,
+                        title,
+                        description,
+                        color,
+                        field_1_title,
+                        field_1_description,
+                        field_1_is_inline,
+                        field_2_title,
+                        field_2_description,
+                        field_2_is_inline,
+                        field_3_title,
+                        field_3_description,
+                        field_3_is_inline,
+                        footer
+                        )
 
-            await channel.send(embed=embed)
-            await interaction.response.defer(ephemeral=True)
-            await interaction.followup.send(f"✅ Embed sent succesfully in {channel.mention}!", ephemeral=True)
-            print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {channel.name}")
-
-    except Exception as error:
-        print(f"An error occurred in the /{interaction.command.name} command: {error}")
-        await interaction.response.send_message(f"{ERROR_MESSAGE}\n{error}", ephemeral=True)
+        await channel.send(embed=embed)
+        await interaction.response.defer(ephemeral=True)
+        await interaction.followup.send(f"✅ Embed sent succesfully in {channel.mention}!", ephemeral=True)
+        print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, embed sent in {channel.name}")
 
 
 
@@ -354,14 +343,14 @@ async def slash_ticket_setup(interaction: discord.Interaction):
         await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
 
-    embed = make_embed(
+    embed_ticket_setup = make_embed(
             channel=interaction.channel,
             title="Support ticket",
             description="Open a ticket to request support to the server Staff!",
             color=SUPPORT_TICKET_COLOR
             )
 
-    await interaction.channel.send(embed=embed, view=SupportTicketView())
+    await interaction.channel.send(embed=embed_ticket_setup, view=SupportTicketView())
 
     await interaction.response.send_message("✅ Ticket system set up in the current channel!", ephemeral=True)
 
@@ -459,6 +448,7 @@ async def slash_staff_application_setup(interaction: discord.Interaction):
 
 # Slash /say command
 @client.tree.command(name="say", description="Make the bot say something")
+@app_commands.describe(message = "The message to make the bot say")
 async def slash_say(interaction: discord.Interaction, message: str):
 
     if interaction.user.id != AETHERIUS_ID:
@@ -646,3 +636,35 @@ async def slash_bumpleaderboard(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed_bump_leaderboard)
 
     print(f"Regular !{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
+
+
+
+
+
+# Slash /dm command
+@client.tree.command(name="dm", description="Send a direct message as an embed to a user")
+@app_commands.describe(user = "The user to send the DM to",
+                       title = "The title of the embed",
+                       message = "The message to include in the embed"
+                       )
+async def slash_dm(interaction: discord.Interaction, user: discord.User, title: str, message: str):
+
+    staff_role = interaction.guild.get_role(STAFF_ROLE_ID)
+    if staff_role not in interaction.user.roles:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
+
+    embed_dm = make_embed(
+        color=AURORI_COLOR,
+        title=title,
+        description=message
+    )
+    embed_dm.set_author(name="Message from Aether Music's Staff", icon_url=interaction.guild.icon.url if interaction.guild.icon else None)
+    embed_dm.set_footer(text=f"Sent by {interaction.user.name}", icon_url=interaction.user.display_avatar.url)
+
+    try:
+        await user.send(embed=embed_dm)
+        await interaction.response.send_message(f"✅ Message sent to {user.mention}", ephemeral=False)
+        print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, message sent to {user.name}")
+    except discord.Forbidden:
+        await interaction.response.send_message(f"❌ Failed to send a DM to {user.mention}", ephemeral=False)
