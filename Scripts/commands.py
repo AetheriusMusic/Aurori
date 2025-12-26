@@ -82,6 +82,28 @@ async def slash_ping(interaction: discord.Interaction):
 
 
 
+# Regular !uptime command
+@client.command(name="uptime")
+async def regular_uptime(ctx):
+
+    from tasks import uptime_string
+
+    await ctx.send(f"<:scugBoba:1406044764675113030> Uptime: {uptime_string}")
+    print(f"Regular !{ctx.command.name} {COMMAND_EXECUTED_MESSAGE} {ctx.author.name} in {ctx.channel.name}")
+
+
+
+# Slash /uptime command
+@client.tree.command(name="uptime", description="Check the bot's uptime")
+async def slash_uptime(interaction: discord.Interaction):
+
+    from tasks import uptime_string
+
+    await interaction.response.send_message(f"<:scugBoba:1406044764675113030> Uptime: {uptime_string}")
+    print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name} in {interaction.channel.name}")
+
+
+
 # Regular !love command
 @client.command(name="love")
 async def regular_love(ctx):
@@ -243,14 +265,11 @@ async def slash_spamping(interaction: discord.Interaction,
 
 
         match webhook_index:
-            case 0: webhook_index = spamping_silksong_url
-            case 1: webhook_index = spamping_bot_commands_url
-            case None:
-                await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
-                webhook_index = spamping_silksong_url
+            case 0: webhook_index = spamping_staff_url
+            case 1: webhook_index = spamping_hallownest_url
             case _:
-                await interaction.followup.send("Invalid channel selection! Defaulting to Silksong channel.", ephemeral=True)
-                webhook_index = spamping_silksong_url
+                await interaction.followup.send("Invalid channel selection!", ephemeral=True)
+                return
 
         # Spamping using a webhook
         async with aiohttp.ClientSession() as session:

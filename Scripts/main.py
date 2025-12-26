@@ -52,6 +52,7 @@ async def on_ready():
     check_avatars.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_nicknames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
     check_usernames.start(aether_music, client.get_channel(USER_LOGS_CHANNEL_ID))
+    uptime_timer.start(datetime.now())
 
     # /Slash commands registration
     await client.tree.sync()
@@ -139,17 +140,45 @@ async def on_message(message):
 
 
 @client.event
-async def on_member_join(member):
-    account_age = datetime.now(timezone.utc) - member.created_at
+async def on_member_join(user):
+    account_age = datetime.now(timezone.utc) - user.created_at
 
     if account_age < timedelta(days=30):
-        print(f"Didn't assing Member role to the new user {member.name}, account too young")
+        print(f"Didn't assing Member role to the new user {user.name}, account too young")
         return
 
     member_role = aether_music.get_role(MEMBER_ROLE_ID)
 
-    await member.add_roles(member_role)
-    print(f"Assigned Member role to the new user {member.name}")
+    await user.add_roles(member_role)
+    print(f"Assigned Member role to the new user {user.name}")
+
+    bot_member = aether_music.me
+    verification_role = aether_music.get_role(VERIFICATION_ROLE_ID)
+
+    roles_to_remove = [role for role in user.roles if role != aether_music.default_role and not role.managed and role < bot_member.top_role]
+
+    with open(VERIFICATION_LIST_PATH, "r", encoding="utf-8") as verification_file:
+        verification_list = json.load(verification_file)
+
+    user_id_string = str(user.id)
+
+    if user_id_string in verification_list:
+        previous_role_ids = [role.id for role in roles_to_remove]
+
+        if bot_member.top_role > user.top_role and not user.bot:
+            await user.remove_roles(*roles_to_remove)
+            await user.add_roles(verification_role)
+
+            verification_list[user_id_string] = {"Username": user.name,
+                                                 "Display name": user.display_name,
+                                                 "Role IDs": previous_role_ids,
+                                                 "Join date": user.joined_at.strftime("%d/%m/%Y")
+                                                 }
+
+            with open(VERIFICATION_LIST_PATH, "w", encoding="utf-8") as verification_list_file:
+                json.dump(verification_list, verification_list_file, indent=4)
+
+            print(f"Returning user {user.name} has been sent to the verification channel")
 
 
 

@@ -1,4 +1,4 @@
-import json
+from datetime import datetime
 
 from discord.ext import tasks
 
@@ -16,7 +16,7 @@ BUMP_LEADERBOARD_PATH = Path(__file__).resolve().parent.parent / "Data/bump_lead
 # Avatar update
 user_avatars = {}
 
-@tasks.loop(seconds=TASK_TIMER)
+@tasks.loop(seconds=TASK_TIMER_LOGGING)
 async def check_avatars(guild, channel):
     for member in guild.members:
         if member.id in user_avatars:
@@ -31,7 +31,7 @@ async def check_avatars(guild, channel):
                 embed_avatar = make_embed(
                                 channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                 title="Avatar Update",
-                                description=f"{member.name} changed their **avatar**!",
+                                description=f"{member.mention} changed their avatar!",
                                 color=USER_LOGS_COLOR,
                                 field_1_title="Old avatar",
                                 field_1_description=f"{old_avatar_url}",
@@ -55,7 +55,7 @@ async def check_avatars(guild, channel):
 # Nickname update
 user_nicknames = {}
 
-@tasks.loop(seconds=TASK_TIMER)
+@tasks.loop(seconds=TASK_TIMER_LOGGING)
 async def check_nicknames(guild, channel):
 
     for member in guild.members:
@@ -69,7 +69,7 @@ async def check_nicknames(guild, channel):
                     embed_nick = make_embed(
                                     channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                     title="Nickname Update",
-                                    description=f"{member.mention} changed their **nickname**!",
+                                    description=f"{member.mention} changed their nickname!",
                                     color=USER_LOGS_COLOR,
                                     field_1_title="Old nickname",
                                     field_1_description=user_nicknames[member.id],
@@ -83,7 +83,7 @@ async def check_nicknames(guild, channel):
                     embed_nick = make_embed(
                                     channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                     title="Nickname Set",
-                                    description=f"{member.mention} set their **nickname**!",
+                                    description=f"{member.mention} set their nickname!",
                                     color=USER_LOGS_COLOR,
                                     field_1_title="New nickname",
                                     field_1_description=member.nick
@@ -95,7 +95,7 @@ async def check_nicknames(guild, channel):
                     embed_nick = make_embed(
                                     channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                     title="Nickname Removed",
-                                    description=f"{member.mention} removed their **nickname**!",
+                                    description=f"{member.mention} removed their nickname!",
                                     color=USER_LOGS_COLOR,
                                     field_1_title="Old nickname",
                                     field_1_description=user_nicknames[member.id]
@@ -114,7 +114,7 @@ async def check_nicknames(guild, channel):
 # Username update
 user_usernames = {}
 
-@tasks.loop(seconds=TASK_TIMER)
+@tasks.loop(seconds=TASK_TIMER_LOGGING)
 async def check_usernames(guild, channel):
 
     for member in guild.members:
@@ -128,7 +128,7 @@ async def check_usernames(guild, channel):
                     embed_username = make_embed(
                                     channel=client.get_channel(USER_LOGS_CHANNEL_ID),
                                     title="Username Update",
-                                    description=f"{member.mention} changed their **username**!",
+                                    description=f"{member.mention} changed their username!",
                                     color=USER_LOGS_COLOR,
                                     field_1_title="Old username",
                                     field_1_description=user_usernames[member.id],
@@ -143,3 +143,22 @@ async def check_usernames(guild, channel):
                 user_usernames[member.id] = member.name
         else:
             user_usernames[member.id] = member.name
+
+
+
+# Uptime timer
+
+@tasks.loop(seconds=1)
+async def uptime_timer(start_time):
+    global uptime_string
+
+    total_seconds = int((datetime.now() - start_time).total_seconds())
+
+    days, remainder = divmod(total_seconds, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    if days > 0:
+        uptime_string = f"**{days}**d **{hours}**h **{minutes}**m **{seconds}**s"
+    else:
+        uptime_string = f"**{hours}**h **{minutes}**m **{seconds}**s"

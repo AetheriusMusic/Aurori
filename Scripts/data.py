@@ -35,7 +35,7 @@ guild = client.get_guild(AETHER_MUSIC_ID)
 ERROR_MESSAGE = "An error occurred while executing the command:"
 NO_PERMISSION_MESSAGE = "You don't have permission to use this command!"
 COMMAND_EXECUTED_MESSAGE = "command successfully executed by"
-TASK_TIMER = 5
+TASK_TIMER_LOGGING = 5
 
 # User IDs
 AETHERIUS_ID = 767363924734509059
@@ -77,5 +77,5 @@ STAFF_FORMS_CHANNEL_ID = 1447296864985551050
 OTHER_CATEGORY_ID = 1408475211720036504
 
 # Webhook URLs
-spamping_bot_commands_url = webhook_urls[0]
-spamping_silksong_url = webhook_urls[1]
+spamping_staff_url = webhook_urls[0]
+spamping_hallownest_url = webhook_urls[1]
