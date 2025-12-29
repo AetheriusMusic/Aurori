@@ -223,7 +223,7 @@ async def slash_shutdown(interaction: discord.Interaction):
     user="The user to ping",
     role="The role to ping",
     text="Custom message to include (default: \"Hello :3\")",
-    webhook_index="The channel to send the spamping in (1: Bot Commands, 0: Silksong)"
+    webhook_index="The channel to send the spamping in (1: Hallownest, 0: Staff)"
     )
 async def slash_spamping(interaction: discord.Interaction,
                          times: int,
@@ -241,9 +241,9 @@ async def slash_spamping(interaction: discord.Interaction,
         await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
     if not ping_provided:
         await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
-    if times > 100:
-        times = 100
-        await interaction.followup.send("You can't spam ping more than 100 times! (Limit set to 100)", ephemeral=True)
+    if times > 50:
+        times = 50
+        await interaction.followup.send("You can't spam ping more than 50 times! (Limit set to 50)", ephemeral=True)
 
     user_mention = user.mention if user else ""
     role_mention = role.mention if role else ""
@@ -289,9 +289,9 @@ async def slash_spamping(interaction: discord.Interaction,
 @client.tree.command(name="embed", description="Send an embed")
 @app_commands.describe(
     channel = "The channel to send the embed in",
-    title = "The title of the embed (default: Title)",
-    description = "The description of the embed (default: Description)",
-    color = "The hexadecimal value of the color of the embed (default: #9954DD)",
+    title = "The title of the embed",
+    description = "The description of the embed",
+    color = "The hexadecimal value of the color of the embed",
     field_1_title = "The title of the first field",
     field_1_description = "The description of the first field",
     field_1_is_inline = "Whether the first field is inline or not (default: False)",
@@ -668,7 +668,9 @@ async def slash_bumpleaderboard(interaction: discord.Interaction):
                        )
 async def slash_dm(interaction: discord.Interaction, user: discord.User, title: str, message: str):
 
+    aetherius = interaction.guild.get_member(AETHERIUS_ID)
     staff_role = interaction.guild.get_role(STAFF_ROLE_ID)
+
     if staff_role not in interaction.user.roles:
         await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
         return
@@ -678,12 +680,18 @@ async def slash_dm(interaction: discord.Interaction, user: discord.User, title: 
         title=title,
         description=message
     )
+    embed_dm.set_footer(text=f"Sent by {interaction.user.name}\nOpen a support ticket if you have any questions", icon_url=interaction.user.display_avatar.url)
+
+    embed_dm_aetherius = embed_dm.copy()
+
     embed_dm.set_author(name="Message from Aether Music's Staff", icon_url=interaction.guild.icon.url if interaction.guild.icon else None)
-    embed_dm.set_footer(text=f"Sent by {interaction.user.name}", icon_url=interaction.user.display_avatar.url)
+
+    embed_dm_aetherius.set_author(name=f"DM sent to {user.name} ({user.id})", icon_url=user.display_avatar.url if user.display_avatar else None)
 
     try:
         await user.send(embed=embed_dm)
         await interaction.response.send_message(f"✅ Message sent to {user.mention}", ephemeral=False)
         print(f"Slash /{interaction.command.name} {COMMAND_EXECUTED_MESSAGE} {interaction.user.name}, message sent to {user.name}")
+        await aetherius.send(embed=embed_dm_aetherius)
     except discord.Forbidden:
         await interaction.response.send_message(f"❌ Failed to send a DM to {user.mention}", ephemeral=False)

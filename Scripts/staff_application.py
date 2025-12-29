@@ -1,4 +1,5 @@
 import json
+import io
 
 import discord
 
@@ -58,6 +59,7 @@ class StaffApplicationFormModal(discord.ui.Modal, title="Staff Application Form"
 
         author = interaction.user
         staff_forms_channel = interaction.client.get_channel(STAFF_FORMS_CHANNEL_ID)
+        data_backup_channel = interaction.client.get_channel(DATA_BACKUP_CHANNEL_ID)
 
         if self.age.value == None or self.age.value.strip() == "":
             age_answer = "Age not specified <:scugScribble:1430184357225693204>"
@@ -132,7 +134,14 @@ class StaffApplicationFormModal(discord.ui.Modal, title="Staff Application Form"
         await interaction.response.send_message("<:scugSilly:1406051577365794816> Thank you for applying! We'll reach out to you soon to let you know if you get accepted!", ephemeral=True)
         print(f"New staff application submitted by {author.name}")
 
+        with open(STAFF_APPLICATIONS_LIST_PATH, "r", encoding="utf-8") as staff_applications_list_file:
+            staff_applications_list = json.load(staff_applications_list_file)
 
+        # Data backup
+        json_bytes = json.dumps(staff_applications_list, indent=4).encode("utf-8")
+        staff_applications_list_backup_file = discord.File(fp=io.BytesIO(json_bytes), filename="staff_applications_list_backup.json")
+
+        await data_backup_channel.send(file=staff_applications_list_backup_file)
 
 
 
@@ -159,6 +168,7 @@ class StaffApplicationsReviewView(discord.ui.View):
             await interaction.response.send_message("You silly goose <:scugSilly:1406051577365794816>", ephemeral=True)
             return
 
+        data_backup_channel = interaction.client.get_channel(DATA_BACKUP_CHANNEL_ID)
         embed = interaction.message.embeds[0]
         user_id_string = str(embed.footer.text.split(": ")[1])
 
@@ -189,6 +199,12 @@ class StaffApplicationsReviewView(discord.ui.View):
 
             await interaction.response.send_message("🔥 The Staff application has been approved!", ephemeral=True)
 
+            # Data backup
+            json_bytes = json.dumps(staff_applications_list, indent=4).encode("utf-8")
+            staff_applications_list_backup_file = discord.File(fp=io.BytesIO(json_bytes), filename="staff_applications_list_backup.json")
+
+            await data_backup_channel.send(file=staff_applications_list_backup_file)
+
 
 
     @discord.ui.button(label="❌ Deny", style=discord.ButtonStyle.red, custom_id="staff_applications_review_deny_button")
@@ -198,6 +214,7 @@ class StaffApplicationsReviewView(discord.ui.View):
             await interaction.response.send_message("You silly goose <:scugSilly:1406051577365794816>", ephemeral=True)
             return
 
+        data_backup_channel = interaction.client.get_channel(DATA_BACKUP_CHANNEL_ID)
         embed = interaction.message.embeds[0]
         user_id_string = str(embed.footer.text.split(": ")[1])
 
@@ -227,3 +244,9 @@ class StaffApplicationsReviewView(discord.ui.View):
                     json.dump(staff_applications_list, staff_applications_list_file, indent=4)
 
             await interaction.response.send_message("⛔ The Staff application has been denied!", ephemeral=True)
+
+            # Data backup
+            json_bytes = json.dumps(staff_applications_list, indent=4).encode("utf-8")
+            staff_applications_list_backup_file = discord.File(fp=io.BytesIO(json_bytes), filename="staff_applications_list_backup.json")
+
+            await data_backup_channel.send(file=staff_applications_list_backup_file)

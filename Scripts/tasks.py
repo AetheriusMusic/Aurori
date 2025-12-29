@@ -147,7 +147,6 @@ async def check_usernames(guild, channel):
 
 
 # Uptime timer
-
 @tasks.loop(seconds=1)
 async def uptime_timer(start_time):
     global uptime_string

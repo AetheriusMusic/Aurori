@@ -74,6 +74,12 @@ async def on_ready():
 
 
 
+async def bump_warning(channel, user):
+    await asyncio.sleep(7200)
+    await channel.send(f"Hey {user.mention}, it's time to bump again! <:scugAmazed:1406042797529890908>")
+
+
+
 @client.event
 async def on_message(message):
 
@@ -128,7 +134,13 @@ async def on_message(message):
                     await top_member.add_roles(bump_leader_role)
                     print(f"Assigned Bumper Leader role to {top_member.name} with {bump_leaderboard[top_user_id].get('Bump count', 0)} bumps")
 
+                # Data backup
+                data_backup_channel = aether_music.get_channel(DATA_BACKUP_CHANNEL_ID)
 
+                json_bytes = json.dumps(bump_leaderboard, indent=4).encode("utf-8")
+                bump_leaderboard_backup_file = discord.File(fp=io.BytesIO(json_bytes), filename="bump_leaderboard.json")
+
+                await data_backup_channel.send(file=bump_leaderboard_backup_file)
 
 
 
@@ -179,12 +191,6 @@ async def on_member_join(user):
                 json.dump(verification_list, verification_list_file, indent=4)
 
             print(f"Returning user {user.name} has been sent to the verification channel")
-
-
-
-async def bump_warning(channel, user):
-    await asyncio.sleep(7200)
-    await channel.send(f"Hey {user.mention}, it's time to bump again! <:scugAmazed:1406042797529890908>")
 
 
 
