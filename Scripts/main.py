@@ -84,7 +84,7 @@ async def bump_warning(channel, user):
 async def on_message(message):
 
     # Chat with members
-    if client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
+    if not message.author.bot and client.user in message.mentions and any(role.id == MEMBER_ROLE_ID for role in message.author.roles):
         await message.channel.send(random.choice(chat_responses))
     if "[Check this out!](https://youtu.be/xvFZjo5PgG0)" in message.content and message.author.id == AURORI_ID:
         await message.edit(suppress=True)

@@ -233,18 +233,6 @@ async def slash_spamping(interaction: discord.Interaction,
                          webhook_index: int = None
                          ):
 
-    if interaction.user.id != AETHERIUS_ID:
-        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
-        return
-
-    if times < 1:
-        await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
-    if not ping_provided:
-        await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
-    if times > 50:
-        times = 50
-        await interaction.followup.send("You can't spam ping more than 50 times! (Limit set to 50)", ephemeral=True)
-
     user_mention = user.mention if user else ""
     role_mention = role.mention if role else ""
 
@@ -257,19 +245,31 @@ async def slash_spamping(interaction: discord.Interaction,
     else:
         ping_provided = False
 
+    if interaction.user.id != AETHERIUS_ID:
+        await interaction.response.send_message(NO_PERMISSION_MESSAGE, ephemeral=True)
+        return
+
+    if times < 1:
+        await interaction.followup.send("Insert a value bigger than 1!", ephemeral=True)
+    if not ping_provided:
+        await interaction.followup.send("Provide a user or a role to ping!", ephemeral=True)
+    if times > 50:
+        times = 50
+        await interaction.followup.send("You can't spam ping more than 50 times! (Limit set to 50)", ephemeral=True)
+
     message = f"{ping_provided} {text}"
 
     await interaction.response.defer(ephemeral=True)
 
     if times > 1 and ping_provided:
 
-
-        match webhook_index:
-            case 0: webhook_index = spamping_staff_url
-            case 1: webhook_index = spamping_hallownest_url
-            case _:
-                await interaction.followup.send("Invalid channel selection!", ephemeral=True)
-                return
+        if webhook_index == 0:
+            webhook_index = spamping_staff_url
+        elif webhook_index == 1:
+            webhook_index = spamping_hallownest_url
+        else:
+            await interaction.followup.send("Invalid channel selection!", ephemeral=True)
+            return
 
         # Spamping using a webhook
         async with aiohttp.ClientSession() as session:
